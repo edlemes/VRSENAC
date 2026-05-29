@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Senac MT">
+  <rect width="128" height="128" rx="24" fill="#004a98"/>
+  <path d="M24 30h80v16H24z" fill="#f58020"/>
+  <path d="M24 56h80v42H24z" fill="#ffffff"/>
+  <text x="64" y="82" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" fill="#004a98">SENAC</text>
+  <text x="64" y="98" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="2" fill="#f58020">MT</text>
+</svg>

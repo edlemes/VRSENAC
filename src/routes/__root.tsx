@@ -12,10 +12,11 @@ import { useEffect } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
 import { SplashIntro } from "@/components/SplashIntro";
-import senacLogo from "@/assets/senac-logo.png";
+import senacFavicon from "@/assets/senac-favicon.svg";
 import appCss from "../styles.css?url";
 
 const siteTitle = "Futuro Simulado A Nova Era do Turismo";
+const animatedTitle = `${siteTitle}   •   `;
 
 function NotFoundComponent() {
   return (
@@ -95,12 +96,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       {
         rel: "icon",
-        type: "image/png",
-        href: senacLogo,
+        type: "image/svg+xml",
+        href: senacFavicon,
       },
       {
         rel: "apple-touch-icon",
-        href: senacLogo,
+        href: senacFavicon,
       },
     ],
   }),
@@ -132,6 +133,21 @@ function RootComponent() {
     if (pathname.startsWith("/admin")) return;
     import("@/lib/tracking").then((m) => m.trackPageView(pathname));
   }, [pathname]);
+
+  useEffect(() => {
+    let index = 0;
+    document.title = siteTitle;
+
+    const interval = window.setInterval(() => {
+      index = (index + 1) % animatedTitle.length;
+      document.title = animatedTitle.slice(index) + animatedTitle.slice(0, index);
+    }, 320);
+
+    return () => {
+      window.clearInterval(interval);
+      document.title = siteTitle;
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
