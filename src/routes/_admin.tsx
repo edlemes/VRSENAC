@@ -72,7 +72,7 @@ function AdminLayout() {
 
   if (!ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-muted-foreground">
+      <div className="flex min-h-screen items-center justify-center bg-background px-4 text-center text-muted-foreground">
         Verificando acesso…
       </div>
     );
@@ -80,28 +80,28 @@ function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-40 border-b border-border bg-card">
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-4">
+      <header className="safe-header sticky top-0 z-40 border-b border-border bg-card">
+        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:py-4">
           <Link to="/admin" className="group flex items-center transition">
             <img src={senacLogo} alt="Senac MT" className="h-9 w-auto transition group-hover:opacity-80" loading="eager" />
           </Link>
-          <div className="flex items-center gap-3">
-            <span className="hidden text-xs text-muted-foreground md:inline">{email}</span>
-            <Link to="/admin/trocar-senha" className="inline-flex items-center gap-2 border border-border px-3 py-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
+          <div className="flex min-w-0 flex-1 items-center justify-end gap-2 overflow-x-auto sm:gap-3">
+            <span className="hidden truncate text-xs text-muted-foreground lg:inline">{email}</span>
+            <Link to="/admin/trocar-senha" className="inline-flex min-h-12 shrink-0 items-center gap-2 border border-border px-3 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
               <KeyRound size={12} /> Minha senha
             </Link>
-            <Link to="/" className="inline-flex items-center gap-2 border border-border px-3 py-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
+            <Link to="/" className="inline-flex min-h-12 shrink-0 items-center gap-2 border border-border px-3 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
               <ExternalLink size={12} /> Ver site
             </Link>
-            <button onClick={handleLogout} className="inline-flex items-center gap-2 border border-border px-3 py-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
+            <button onClick={handleLogout} className="inline-flex min-h-12 shrink-0 items-center gap-2 border border-border px-3 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
               <LogOut size={12} /> Sair
             </button>
           </div>
         </div>
       </header>
-      <div className="mx-auto flex max-w-[1600px]">
+      <div className="mx-auto flex max-w-[1600px] flex-col md:flex-row">
         <AdminSidebar />
-        <main className="min-w-0 flex-1">
+        <main className="min-w-0 flex-1 overflow-x-hidden">
           <Outlet />
         </main>
       </div>

@@ -59,17 +59,17 @@ function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       ))}
       {slides.length > 1 && (
         <>
-          <div className="absolute bottom-6 left-6 z-10 max-w-md text-xs uppercase tracking-[0.25em] text-background/80 transition-opacity duration-700">
+          <div className="safe-x absolute bottom-20 left-0 z-10 max-w-md px-4 text-[10px] uppercase tracking-[0.18em] text-background/80 transition-opacity duration-700 sm:bottom-6 sm:left-6 sm:px-0 sm:text-xs sm:tracking-[0.25em]">
             {slides[idx]?.legenda}
           </div>
-          <div className="absolute bottom-6 right-6 z-10 flex gap-2">
+          <div className="safe-x absolute bottom-6 right-0 z-10 flex gap-2 px-4 sm:right-6 sm:px-0">
             {slides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setIdx(i)}
                 aria-label={`Slide ${i + 1}`}
-                className={`h-px w-8 transition-all ${
-                  i === idx ? "bg-accent h-[2px] w-10" : "bg-background/40 hover:bg-background/70"
+                className={`min-h-12 w-10 transition-all ${
+                  i === idx ? "bg-accent h-[2px]" : "bg-background/40 hover:bg-background/70"
                 }`}
               />
             ))}
@@ -150,28 +150,28 @@ function Home() {
       <section className="relative isolate overflow-hidden">
         <HeroCarousel slides={slides} />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/40 to-ink/90" />
-        <div className="relative mx-auto flex min-h-[88vh] max-w-7xl flex-col justify-end px-6 pb-20 pt-32">
-          <p className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-gold-soft">
+        <div className="relative mx-auto flex min-h-[calc(100dvh-4rem)] max-w-7xl flex-col justify-end px-4 pb-24 pt-28 sm:px-6 sm:pb-20 sm:pt-32">
+          <p className="mb-5 flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-gold-soft sm:mb-6 sm:text-xs sm:tracking-[0.3em]">
             <span className="h-px w-10 bg-accent" /> Patrimônio · Fé · Tecnologia
           </p>
-          <h1 className="max-w-4xl font-serif text-5xl leading-[1.05] text-background sm:text-6xl md:text-7xl lg:text-8xl">
+          <h1 className="max-w-4xl font-serif text-4xl leading-[1.05] text-background min-[360px]:text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
             O sagrado, agora <em className="text-accent not-italic">eternizado</em> em pixels.
           </h1>
-          <p className="mt-8 max-w-2xl text-lg text-background/80">
+          <p className="mt-6 max-w-2xl text-base leading-7 text-background/80 sm:mt-8 sm:text-lg">
             Caminhe por dentro das catedrais, basílicas e santuários do Brasil em tours 3D imersivos.
             Acenda uma vela. Faça uma oração. Preserve a história para as próximas gerações.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <Link
               to="/igrejas"
-              className="group inline-flex items-center gap-3 bg-accent px-7 py-4 text-sm font-medium uppercase tracking-widest text-accent-foreground transition hover:opacity-90"
+              className="group inline-flex min-h-12 items-center gap-3 bg-accent px-5 text-sm font-medium uppercase tracking-widest text-accent-foreground transition hover:opacity-90 sm:px-7"
             >
               Explorar acervo
               <ArrowRight size={16} className="transition group-hover:translate-x-1" />
             </Link>
             <Link
               to="/parceria"
-              className="inline-flex items-center gap-3 border border-background/30 px-7 py-4 text-sm font-medium uppercase tracking-widest text-background transition hover:bg-background/10"
+              className="inline-flex min-h-12 items-center gap-3 border border-background/30 px-5 text-sm font-medium uppercase tracking-widest text-background transition hover:bg-background/10 sm:px-7"
             >
               Sua igreja no projeto
             </Link>

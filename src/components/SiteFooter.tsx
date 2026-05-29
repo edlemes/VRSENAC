@@ -16,18 +16,18 @@ const socialLinks = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border/60 bg-ink text-background">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 lg:grid-cols-[1.05fr_0.95fr]">
+    <footer className="safe-footer border-t border-border/60 bg-ink text-background">
+      <div className="mx-auto grid max-w-7xl gap-12 px-4 py-14 sm:px-6 sm:py-16 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="space-y-10">
           <div>
-            <div className="inline-flex items-center gap-4">
+            <div className="inline-flex max-w-full items-center gap-3 sm:gap-4">
               <span className="rounded-sm bg-background px-4 py-3 shadow-[0_12px_32px_rgba(0,0,0,0.18)]">
                 <img src={senacLogo} alt="Senac MT" className="h-9 w-auto" />
               </span>
               <span className="h-10 w-px bg-background/20" />
-              <span className="flex flex-col leading-tight">
-                <span className="font-serif text-2xl text-background">Sagrado Digital</span>
-                <span className="text-[11px] uppercase tracking-[0.24em] text-gold">Senac Mato Grosso</span>
+              <span className="flex min-w-0 flex-col leading-tight">
+                <span className="truncate font-serif text-xl text-background sm:text-2xl">Sagrado Digital</span>
+                <span className="truncate text-[10px] uppercase tracking-[0.18em] text-gold sm:text-[11px] sm:tracking-[0.24em]">Senac Mato Grosso</span>
               </span>
             </div>
             <p className="mt-6 max-w-xl text-sm leading-7 text-background/70">
@@ -73,7 +73,7 @@ export function SiteFooter() {
                     rel="noreferrer"
                     aria-label={label}
                     title={label}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-background/15 bg-background/5 text-background/75 transition hover:-translate-y-0.5 hover:border-gold hover:bg-gold hover:text-ink"
+                    className="inline-flex h-12 w-12 items-center justify-center rounded-sm border border-background/15 bg-background/5 text-background/75 transition hover:-translate-y-0.5 hover:border-gold hover:bg-gold hover:text-ink"
                   >
                     <Icon size={18} />
                   </a>
@@ -100,7 +100,7 @@ export function SiteFooter() {
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
               target="_blank"
               rel="noreferrer"
-              className="hidden items-center gap-2 rounded-sm border border-background/15 px-3 py-2 text-xs uppercase tracking-widest text-background/70 transition hover:border-gold hover:text-background sm:inline-flex"
+              className="hidden min-h-12 items-center gap-2 rounded-sm border border-background/15 px-3 text-xs uppercase tracking-widest text-background/70 transition hover:border-gold hover:text-background sm:inline-flex"
             >
               Abrir <ExternalLink size={13} />
             </a>
@@ -115,7 +115,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-background/10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-6 text-xs text-background/50 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-xs text-background/50 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <span>© {new Date().getFullYear()} Sagrado Digital. Patrimônio eternizado em pixels.</span>
           <a href="https://www.mt.senac.br/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 transition hover:text-background">
             Site oficial Senac MT <ExternalLink size={12} />
