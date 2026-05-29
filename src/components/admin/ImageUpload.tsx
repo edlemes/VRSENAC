@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import type { PointerEvent } from "react";
-import { Upload, X, Link as LinkIcon, ImageIcon, Move, ZoomIn } from "lucide-react";
+import { Upload, X, Link as LinkIcon, ImageIcon, Move, ZoomIn, Crop, RotateCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -19,11 +19,16 @@ type DragState = {
   baseY: number;
 };
 
+type EditorImage = {
+  file: File;
+  url: string;
+};
+
 export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem", aspectRatio = 16 / 9 }: Props) {
   const [uploading, setUploading] = useState(false);
+  const [preparingEditor, setPreparingEditor] = useState(false);
   const [mode, setMode] = useState<"upload" | "url">(value && /^https?:\/\//.test(value) && !value.includes("/storage/") ? "url" : "upload");
-  const [pendingFile, setPendingFile] = useState<File | null>(null);
-  const [pendingUrl, setPendingUrl] = useState("");
+  const [editorImage, setEditorImage] = useState<EditorImage | null>(null);
   const [zoom, setZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [drag, setDrag] = useState<DragState | null>(null);
@@ -31,6 +36,13 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
   const cropRef = useRef<HTMLDivElement>(null);
 
   const cropAspect = useMemo(() => `${aspectRatio} / 1`, [aspectRatio]);
+
+  const openEditor = (file: File) => {
+    setEditorImage({ file, url: URL.createObjectURL(file) });
+    setZoom(1);
+    setOffset({ x: 0, y: 0 });
+    setNaturalSize({ width: 0, height: 0 });
+  };
 
   const handleFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -41,11 +53,24 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
       toast.error("Imagem maior que 8MB. Reduza o tamanho e tente novamente.");
       return;
     }
-    setPendingFile(file);
-    setPendingUrl(URL.createObjectURL(file));
-    setZoom(1);
-    setOffset({ x: 0, y: 0 });
-    setNaturalSize({ width: 0, height: 0 });
+    openEditor(file);
+  };
+
+  const adjustCurrentImage = async () => {
+    if (!value) return;
+    setPreparingEditor(true);
+    try {
+      const response = await fetch(value);
+      if (!response.ok) throw new Error("Não foi possível baixar a imagem atual.");
+      const blob = await response.blob();
+      if (!blob.type.startsWith("image/")) throw new Error("O arquivo atual não parece ser uma imagem.");
+      const name = decodeURIComponent(value.split("/").pop()?.split("?")[0] || "imagem-atual");
+      openEditor(new File([blob], name, { type: blob.type }));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível ajustar essa imagem.");
+    } finally {
+      setPreparingEditor(false);
+    }
   };
 
   const uploadFile = async (file: File) => {
@@ -69,14 +94,13 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
   };
 
   const resetEditor = () => {
-    if (pendingUrl) URL.revokeObjectURL(pendingUrl);
-    setPendingFile(null);
-    setPendingUrl("");
+    if (editorImage) URL.revokeObjectURL(editorImage.url);
+    setEditorImage(null);
     setDrag(null);
   };
 
   const confirmCrop = async () => {
-    if (!pendingFile || !pendingUrl || !naturalSize.width || !naturalSize.height || !cropRef.current) return;
+    if (!editorImage || !naturalSize.width || !naturalSize.height || !cropRef.current) return;
 
     const cropBox = cropRef.current.getBoundingClientRect();
     const outputWidth = aspectRatio >= 1 ? 1600 : Math.round(1200 * aspectRatio);
@@ -93,7 +117,7 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
     const drawY = (outputHeight - drawHeight) / 2 + offset.y * previewToOutput;
 
     const image = new Image();
-    image.src = pendingUrl;
+    image.src = editorImage.url;
     await image.decode();
 
     const canvas = document.createElement("canvas");
@@ -119,7 +143,7 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
 
     const adjusted = new File(
       [blob],
-      `${pendingFile.name.replace(/\.[^.]+$/, "")}-ajustada.jpg`,
+      `${editorImage.file.name.replace(/\.[^.]+$/, "")}-ajustada.jpg`,
       { type: "image/jpeg" },
     );
     resetEditor();
@@ -161,7 +185,7 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
 
       <div className="mt-3 flex items-start gap-3">
         {value ? (
-          <div className="relative">
+          <div className="relative shrink-0">
             <img src={value} alt="Pré-visualização" className="h-24 w-36 border border-border object-cover" />
             <button
               type="button"
@@ -170,6 +194,14 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
               aria-label="Remover imagem"
             >
               <X size={12} />
+            </button>
+            <button
+              type="button"
+              onClick={adjustCurrentImage}
+              disabled={preparingEditor || uploading}
+              className="absolute bottom-2 left-2 inline-flex items-center gap-1 bg-background/95 px-2 py-1 text-[10px] uppercase tracking-widest text-foreground shadow backdrop-blur hover:text-gold disabled:opacity-60"
+            >
+              <Crop size={11} /> {preparingEditor ? "Abrindo" : "Ajustar"}
             </button>
           </div>
         ) : (
@@ -205,7 +237,7 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
         </div>
       </div>
 
-      {pendingFile && pendingUrl && (
+      {editorImage && (
         <div
           className="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto bg-ink/80 p-4 backdrop-blur"
           onClick={resetEditor}
@@ -218,7 +250,7 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
               <div>
                 <h3 className="font-serif text-2xl">Ajustar imagem</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Arraste com o mouse para enquadrar antes de postar.
+                  Arraste a foto e use a roda do mouse ou o controle de zoom para enquadrar.
                 </p>
               </div>
               <button type="button" onClick={resetEditor} aria-label="Fechar">
@@ -245,9 +277,14 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
                 setDrag(null);
               }}
               onPointerCancel={() => setDrag(null)}
+              onWheel={(event) => {
+                event.preventDefault();
+                const direction = event.deltaY > 0 ? -0.08 : 0.08;
+                setZoom((current) => Math.min(2.8, Math.max(1, Number((current + direction).toFixed(2)))));
+              }}
             >
               <img
-                src={pendingUrl}
+                src={editorImage.url}
                 alt="Imagem para ajustar"
                 draggable={false}
                 onLoad={(event) => {
@@ -288,9 +325,9 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
                     setZoom(1);
                     setOffset({ x: 0, y: 0 });
                   }}
-                  className="border border-border px-4 py-2 text-xs uppercase tracking-widest hover:bg-secondary"
+                  className="inline-flex items-center gap-2 border border-border px-4 py-2 text-xs uppercase tracking-widest hover:bg-secondary"
                 >
-                  Centralizar
+                  <RotateCcw size={13} /> Centralizar
                 </button>
                 <button
                   type="button"

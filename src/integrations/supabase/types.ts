@@ -50,6 +50,81 @@ export type Database = {
         }
         Relationships: []
       }
+      galeria_secoes: {
+        Row: {
+          descricao_card: string
+          email: string
+          endereco: string
+          encontros: string
+          fonte: string
+          galeria_detalhes: string
+          galeria_resumo: string
+          galeria_titulo: string
+          icone: string
+          id: string
+          imagem_card_alt: string
+          imagem_card_url: string
+          localizacao_curta: string
+          observacao_visita: string
+          ordem: number
+          palavras_chave: string[]
+          recomendacoes: string
+          slug: string
+          telefone: string
+          titulo: string
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          descricao_card?: string
+          email?: string
+          endereco?: string
+          encontros?: string
+          fonte?: string
+          galeria_detalhes?: string
+          galeria_resumo?: string
+          galeria_titulo?: string
+          icone?: string
+          id?: string
+          imagem_card_alt?: string
+          imagem_card_url?: string
+          localizacao_curta?: string
+          observacao_visita?: string
+          ordem?: number
+          palavras_chave?: string[]
+          recomendacoes?: string
+          slug: string
+          telefone?: string
+          titulo?: string
+          updated_at?: string
+          whatsapp?: string
+        }
+        Update: {
+          descricao_card?: string
+          email?: string
+          endereco?: string
+          encontros?: string
+          fonte?: string
+          galeria_detalhes?: string
+          galeria_resumo?: string
+          galeria_titulo?: string
+          icone?: string
+          id?: string
+          imagem_card_alt?: string
+          imagem_card_url?: string
+          localizacao_curta?: string
+          observacao_visita?: string
+          ordem?: number
+          palavras_chave?: string[]
+          recomendacoes?: string
+          slug?: string
+          telefone?: string
+          titulo?: string
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       home_carrossel: {
         Row: {
           ativo: boolean
