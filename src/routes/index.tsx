@@ -190,9 +190,9 @@ function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
         <div className="absolute left-1/2 top-0 h-px w-[min(72rem,calc(100%-3rem))] -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
 
-        <div className="relative mx-auto max-w-6xl px-6 py-28">
-          <div className="mx-auto max-w-5xl text-center">
-            <p className="divider-ornament mx-auto mb-8 max-w-xs text-xs uppercase tracking-[0.3em] text-gold">
+        <div className="relative mx-auto max-w-7xl px-6 py-28">
+          <div className="max-w-5xl">
+            <p className="divider-ornament mb-8 max-w-xs text-xs uppercase tracking-[0.3em] text-gold">
               Manifesto
             </p>
             <div className="relative">
@@ -381,12 +381,12 @@ function Home() {
       </section>
 
       <section className="bg-secondary/40">
-        <div className="mx-auto max-w-5xl px-6 py-28 text-center">
+        <div className="mx-auto max-w-7xl px-6 py-28">
           <p className="text-xs uppercase tracking-[0.3em] text-gold">Comece sua jornada</p>
-          <h2 className="mx-auto mt-6 max-w-3xl font-serif text-4xl md:text-6xl">
+          <h2 className="mt-6 max-w-3xl font-serif text-4xl md:text-6xl">
             Cruze a nave. Aproxime-se do altar. <em className="text-gold not-italic">Ore.</em>
           </h2>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
+          <div className="mt-10 flex flex-wrap gap-4">
             <Link
               to="/igrejas"
               className="inline-flex items-center gap-3 bg-ink px-7 py-4 text-sm uppercase tracking-widest text-background transition hover:bg-foreground"
