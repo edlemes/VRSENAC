@@ -1,0 +1,1 @@
+ALTER TABLE public.igrejas ADD COLUMN IF NOT EXISTS tours_externos text[] NOT NULL DEFAULT '{}'::text[];
