@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { CalendarDays, Church, Landmark, Mail, MapPin, MessageCircle, MoonStar, Phone, X } from "lucide-react";
+import { ArrowRight, CalendarDays, Church, Landmark, Mail, MapPin, MessageCircle, MoonStar, Phone, X } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { listFotos, type Foto } from "@/lib/galeria";
@@ -191,45 +191,66 @@ function GaleriaPage() {
 
         {!isLoading && !error && (
           <div className="space-y-8">
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-3">
               {gallerySections.map((section, index) => {
                 const Icon = section.icon;
                 const count = getSectionFotos(fotos, index).length;
                 const isActive = section.id === activeSection;
+                const paddedIndex = String(index + 1).padStart(2, "0");
 
                 return (
                   <button
                     key={section.id}
                     type="button"
                     onClick={() => setActiveSection(section.id)}
-                    className={`group min-h-36 rounded-sm border bg-card p-4 text-left transition duration-300 ${
+                    className={`group relative min-h-[19rem] overflow-hidden rounded-sm border p-6 text-left transition duration-300 ${
                       isActive
-                        ? "border-accent shadow-[0_10px_30px_rgba(245,128,32,0.12)]"
-                        : "border-border/70 bg-card hover:-translate-y-0.5 hover:border-accent"
+                        ? "border-accent bg-card shadow-[0_22px_60px_rgba(245,128,32,0.14)]"
+                        : "border-border/70 bg-card hover:-translate-y-1 hover:border-accent/70 hover:shadow-[0_18px_50px_rgba(15,23,42,0.06)]"
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-sm ${isActive ? "bg-accent/10 text-accent" : "bg-secondary text-accent"}`}>
-                        <Icon size={22} />
+                    <span className="pointer-events-none absolute right-6 top-5 font-serif text-7xl leading-none text-foreground/[0.04] transition group-hover:text-accent/10">
+                      {paddedIndex}
+                    </span>
+
+                    <div className="relative flex items-start justify-between gap-4">
+                      <span className={`flex h-14 w-14 shrink-0 items-center justify-center border transition ${
+                        isActive
+                          ? "border-accent bg-accent text-accent-foreground"
+                          : "border-accent/20 bg-accent/10 text-accent group-hover:border-accent/50"
+                      }`}>
+                        <Icon size={26} strokeWidth={1.35} />
                       </span>
-                      <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                      <span className={`border px-3 py-2 text-[10px] uppercase tracking-[0.22em] transition ${
+                        isActive
+                          ? "border-accent/40 bg-accent/10 text-accent"
+                          : "border-border/70 text-muted-foreground group-hover:border-accent/40 group-hover:text-accent"
+                      }`}>
                         {count} fotos
                       </span>
                     </div>
-                    {"imageUrl" in section && section.imageUrl && (
-                      <img
-                        src={section.imageUrl}
-                        alt={section.imageAlt}
-                        className="mt-4 aspect-[16/9] w-full rounded-sm object-cover grayscale-[10%]"
-                        loading="lazy"
-                      />
-                    )}
-                    <h2 className="mt-4 font-serif text-xl leading-tight text-foreground">
+
+                    <div className="relative mt-12 h-px w-16 bg-accent/50 transition group-hover:w-24" />
+
+                    <h2 className="relative mt-6 max-w-[18rem] font-serif text-2xl leading-tight text-foreground">
                       {section.title}
                     </h2>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground line-clamp-2">
+                    <p className="relative mt-4 text-sm leading-7 text-muted-foreground">
                       {section.description}
                     </p>
+
+                    <div className="relative mt-8 flex items-center justify-between gap-4 border-t border-border/70 pt-5">
+                      <span className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+                        {isActive ? "Selecionado" : "Explorar seção"}
+                      </span>
+                      <span className={`flex h-10 w-10 items-center justify-center border transition ${
+                        isActive
+                          ? "border-accent bg-accent text-accent-foreground"
+                          : "border-border text-muted-foreground group-hover:border-accent group-hover:text-accent"
+                      }`}>
+                        <ArrowRight size={16} />
+                      </span>
+                    </div>
                   </button>
                 );
               })}

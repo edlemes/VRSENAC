@@ -12,11 +12,13 @@ import { useEffect } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
 import { SplashIntro } from "@/components/SplashIntro";
-import senacFavicon from "@/assets/senac-favicon.svg";
+import senacFavicon from "@/assets/senac-favicon.png";
 import appCss from "../styles.css?url";
 
 const siteTitle = "Futuro Simulado A Nova Era do Turismo";
-const animatedTitle = `${siteTitle}   •   `;
+const tabTitle = "Futuro Simulado | A Nova Era do Turismo";
+const tabTitleMarquee = `${tabTitle}      `;
+const tabTitleWindowSize = 34;
 
 function NotFoundComponent() {
   return (
@@ -96,7 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       {
         rel: "icon",
-        type: "image/svg+xml",
+        type: "image/png",
         href: senacFavicon,
       },
       {
@@ -136,12 +138,13 @@ function RootComponent() {
 
   useEffect(() => {
     let index = 0;
-    document.title = siteTitle;
+    document.title = tabTitle;
 
     const interval = window.setInterval(() => {
-      index = (index + 1) % animatedTitle.length;
-      document.title = animatedTitle.slice(index) + animatedTitle.slice(0, index);
-    }, 320);
+      const source = tabTitleMarquee + tabTitleMarquee;
+      document.title = source.slice(index, index + tabTitleWindowSize);
+      index = (index + 1) % tabTitleMarquee.length;
+    }, 420);
 
     return () => {
       window.clearInterval(interval);
