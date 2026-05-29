@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { listIgrejas } from "@/lib/igrejas";
-import { supabase } from "@/integrations/supabase/client";
+import { hasSupabaseConfig, supabase } from "@/integrations/supabase/client";
 import { ArrowRight, MapPin, Compass } from "lucide-react";
 
 export const Route = createFileRoute("/igrejas/")({
@@ -27,6 +27,8 @@ export const Route = createFileRoute("/igrejas/")({
 });
 
 async function listIgrejasWithTour(): Promise<Set<string>> {
+  if (!hasSupabaseConfig()) return new Set();
+
   const { data, error } = await supabase.from("tour_scenes").select("igreja_id");
   if (error) throw error;
   return new Set((data ?? []).map((r) => r.igreja_id as string));

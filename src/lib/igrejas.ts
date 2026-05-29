@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { hasSupabaseConfig, supabase } from "@/integrations/supabase/client";
 
 export type Igreja = {
   id: string;
@@ -35,6 +35,25 @@ const GRANDE_TEMPLO_PUBLIC_DEFAULTS: Partial<Igreja> = {
     "Marco religioso e urbano de Cuiabá",
   ],
 };
+
+const PUBLIC_FALLBACK_IGREJAS: Igreja[] = [
+  applyPublicDefaults({
+    id: "public-grande-templo",
+    slug: "grande-templo",
+    nome: "Grande Templo Assembleia de Deus",
+    cidade: "Cuiabá",
+    estado: "MT",
+    ano: "",
+    estilo: "",
+    resumo: "",
+    descricao: "",
+    imagem_url: "",
+    destaque: true,
+    pontos_de_fe: [],
+    cena_inicial_id: null,
+    tours_externos: [],
+  }),
+];
 
 function normalizeText(value: string) {
   return value
@@ -109,6 +128,8 @@ export function normalizeMatterportUrl(raw: string): string {
 
 
 export async function listIgrejas(): Promise<Igreja[]> {
+  if (!hasSupabaseConfig()) return PUBLIC_FALLBACK_IGREJAS;
+
   const { data, error } = await supabase
     .from("igrejas")
     .select("*")
@@ -119,6 +140,10 @@ export async function listIgrejas(): Promise<Igreja[]> {
 }
 
 export async function getIgrejaBySlug(slug: string): Promise<Igreja | null> {
+  if (!hasSupabaseConfig()) {
+    return PUBLIC_FALLBACK_IGREJAS.find((igreja) => igreja.slug === slug) ?? null;
+  }
+
   const { data, error } = await supabase
     .from("igrejas")
     .select("*")
@@ -129,6 +154,10 @@ export async function getIgrejaBySlug(slug: string): Promise<Igreja | null> {
 }
 
 export async function getIgrejaById(id: string): Promise<Igreja | null> {
+  if (!hasSupabaseConfig()) {
+    return PUBLIC_FALLBACK_IGREJAS.find((igreja) => igreja.id === id) ?? null;
+  }
+
   const { data, error } = await supabase
     .from("igrejas")
     .select("*")

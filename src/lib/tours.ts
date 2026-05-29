@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { hasSupabaseConfig, supabase } from "@/integrations/supabase/client";
 
 export type TourScene = {
   id: string;
@@ -24,6 +24,8 @@ export type TourHotspot = {
 };
 
 export async function listScenes(igrejaId: string): Promise<TourScene[]> {
+  if (!hasSupabaseConfig()) return [];
+
   const { data, error } = await supabase
     .from("tour_scenes")
     .select("*")
@@ -34,6 +36,8 @@ export async function listScenes(igrejaId: string): Promise<TourScene[]> {
 }
 
 export async function listHotspotsByIgreja(igrejaId: string): Promise<TourHotspot[]> {
+  if (!hasSupabaseConfig()) return [];
+
   // join via scenes
   const { data: scenes, error: sErr } = await supabase
     .from("tour_scenes")
@@ -51,6 +55,8 @@ export async function listHotspotsByIgreja(igrejaId: string): Promise<TourHotspo
 }
 
 export async function listHotspots(sceneId: string): Promise<TourHotspot[]> {
+  if (!hasSupabaseConfig()) return [];
+
   const { data, error } = await supabase
     .from("tour_hotspots")
     .select("*")

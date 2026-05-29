@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { hasSupabaseConfig, supabase } from "@/integrations/supabase/client";
 
 export type Foto = {
   id: string;
@@ -13,12 +13,16 @@ export type Foto = {
 export type FotoInput = Omit<Foto, "id">;
 
 export async function listFotos(): Promise<Foto[]> {
+  if (!hasSupabaseConfig()) return [];
+
   const { data, error } = await supabase.from("galeria_fotos").select("*").order("ordem", { ascending: true }).order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Foto[];
 }
 
 export async function listFotosByTag(tag: string): Promise<Foto[]> {
+  if (!hasSupabaseConfig()) return [];
+
   const { data, error } = await supabase
     .from("galeria_fotos")
     .select("*")

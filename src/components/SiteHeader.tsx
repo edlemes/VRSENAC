@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, LogIn, Shield } from "lucide-react";
 import senacLogo from "@/assets/senac-logo.png";
-import { supabase } from "@/integrations/supabase/client";
+import { hasSupabaseConfig, supabase } from "@/integrations/supabase/client";
 
 const links = [
   { to: "/", label: "Início" },
@@ -16,13 +16,26 @@ export function SiteHeader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setIsLoggedIn(!!data.session?.user);
-    });
+    if (!hasSupabaseConfig()) return;
+
+    let active = true;
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (active) setIsLoggedIn(!!data.session?.user);
+      })
+      .catch(() => {
+        if (active) setIsLoggedIn(false);
+      });
+
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       setIsLoggedIn(!!session?.user);
     });
-    return () => sub.subscription.unsubscribe();
+
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const navLinkClass =
