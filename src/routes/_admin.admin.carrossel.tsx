@@ -15,6 +15,7 @@ export const Route = createFileRoute("/_admin/admin/carrossel")({
 });
 
 const EMPTY: SlideInput = { titulo: "", subtitulo: "", imagem_url: "", link: "", ordem: 0, ativo: true };
+const PUBLIC_CAROUSEL_QUERY_KEY = ["home_carrossel", "ativos", "public-v2"] as const;
 
 function AdminCarrossel() {
   const qc = useQueryClient();
@@ -24,13 +25,17 @@ function AdminCarrossel() {
 
   const del = useMutation({
     mutationFn: (id: string) => deleteSlide(id),
-    onSuccess: () => { toast.success("Slide excluído."); qc.invalidateQueries({ queryKey: ["admin-carrossel"] }); qc.invalidateQueries({ queryKey: ["carrossel-pub"] }); },
+    onSuccess: () => {
+      toast.success("Slide excluído.");
+      qc.invalidateQueries({ queryKey: ["admin-carrossel"] });
+      qc.invalidateQueries({ queryKey: PUBLIC_CAROUSEL_QUERY_KEY });
+    },
   });
 
   const reorder = async (slide: Slide, dir: -1 | 1) => {
     await updateSlide(slide.id, { ordem: slide.ordem + dir });
     qc.invalidateQueries({ queryKey: ["admin-carrossel"] });
-    qc.invalidateQueries({ queryKey: ["carrossel-pub"] });
+    qc.invalidateQueries({ queryKey: PUBLIC_CAROUSEL_QUERY_KEY });
   };
 
   return (
@@ -80,7 +85,11 @@ function AdminCarrossel() {
         <SlideEditor
           initial={editing === "new" ? EMPTY : editing}
           onClose={() => setEditing(null)}
-          onSaved={() => { qc.invalidateQueries({ queryKey: ["admin-carrossel"] }); qc.invalidateQueries({ queryKey: ["carrossel-pub"] }); setEditing(null); }}
+          onSaved={() => {
+            qc.invalidateQueries({ queryKey: ["admin-carrossel"] });
+            qc.invalidateQueries({ queryKey: PUBLIC_CAROUSEL_QUERY_KEY });
+            setEditing(null);
+          }}
         />
       )}
 
@@ -108,6 +117,7 @@ function SlideEditor({ initial, onClose, onSaved }: { initial: SlideInput | Slid
 
   const save = async () => {
     if (!form.imagem_url) { toast.error("Imagem é obrigatória."); return; }
+    if (!form.titulo.trim()) { toast.error("Informe um título para publicar o slide."); return; }
     setSaving(true);
     try {
       if (isEdit) await updateSlide((initial as Slide).id, form);

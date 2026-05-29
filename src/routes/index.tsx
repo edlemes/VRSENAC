@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { listIgrejas } from "@/lib/igrejas";
-import heroCathedral from "@/assets/hero-cathedral.jpg";
 import candles from "@/assets/candles.jpg";
+import mesquitaEntradaVitrais from "@/assets/mesquita-entrada-vitrais.jpg";
+import mesquitaFachadaMinarete from "@/assets/mesquita-fachada-minarete.jpg";
+import mesquitaSalaOracao from "@/assets/mesquita-sala-oracao.jpg";
 import { ArrowRight, Scan, Heart, Landmark, Flame, Users, Sparkles, Compass, MapPin } from "lucide-react";
 import type { Igreja } from "@/lib/igrejas";
 
@@ -30,6 +32,28 @@ export const Route = createFileRoute("/")({
 });
 
 type HeroSlide = { src: string; alt: string; legenda?: string };
+
+const fallbackHeroSlides: HeroSlide[] = [
+  {
+    src: mesquitaFachadaMinarete,
+    alt: "Fachada da Mesquita de Cuiabá",
+    legenda: "Futuro Simulado · Turismo imersivo",
+  },
+  {
+    src: mesquitaEntradaVitrais,
+    alt: "Entrada com vitrais da Mesquita de Cuiabá",
+    legenda: "Nova era do turismo · Acervo visual",
+  },
+  {
+    src: mesquitaSalaOracao,
+    alt: "Sala de oração registrada para visita virtual",
+    legenda: "Experiência digital · Patrimônio preservado",
+  },
+];
+
+function hasPublicSlideContent(slide: { imagem_url?: string; titulo?: string; subtitulo?: string }) {
+  return Boolean(slide.imagem_url?.trim() && (slide.titulo?.trim() || slide.subtitulo?.trim()));
+}
 
 function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const [idx, setIdx] = useState(0);
@@ -116,13 +140,14 @@ function Home() {
     queryFn: listIgrejas,
   });
   const { data: heroSlides = [] } = useQuery({
-    queryKey: ["home_carrossel", "ativos"],
+    queryKey: ["home_carrossel", "ativos", "public-v2"],
     queryFn: () => import("@/lib/carrossel").then((m) => m.listSlides({ onlyAtivos: true })),
+    staleTime: 0,
   });
   const destaque = igrejas.find((i) => i.destaque) ?? igrejas[0];
 
   let slides: HeroSlide[] = heroSlides
-    .filter((s) => s.imagem_url)
+    .filter(hasPublicSlideContent)
     .map((s) => ({
       src: s.imagem_url,
       alt: s.titulo || "Slide",
@@ -140,7 +165,7 @@ function Home() {
       }));
   }
   if (slides.length === 0) {
-    slides.push({ src: heroCathedral, alt: "Interior de catedral barroca" });
+    slides = fallbackHeroSlides;
   }
 
   return (
