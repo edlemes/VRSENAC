@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import type { PointerEvent } from "react";
-import { Upload, X, Link as LinkIcon, ImageIcon, Move, ZoomIn, Crop, RotateCcw } from "lucide-react";
+import { Upload, X, Link as LinkIcon, ImageIcon, Move, ZoomIn, RotateCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -186,7 +186,23 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
       <div className="mt-3 flex items-start gap-3">
         {value ? (
           <div className="relative shrink-0">
-            <img src={value} alt="Pré-visualização" className="h-24 w-36 border border-border object-cover" />
+            <button
+              type="button"
+              onClick={adjustCurrentImage}
+              disabled={preparingEditor || uploading}
+              className="group block border border-border bg-ink disabled:cursor-wait disabled:opacity-70"
+              aria-label="Ajustar enquadramento da imagem"
+              title="Clique para ajustar o enquadramento"
+            >
+              <img
+                src={value}
+                alt="Pré-visualização"
+                className="h-24 w-36 object-cover transition group-hover:opacity-75"
+              />
+              <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-ink/75 px-2 py-1 text-center text-[10px] uppercase tracking-widest text-background opacity-0 transition group-hover:opacity-100">
+                {preparingEditor ? "Abrindo" : "Clique para ajustar"}
+              </span>
+            </button>
             <button
               type="button"
               onClick={() => onChange("")}
@@ -194,14 +210,6 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
               aria-label="Remover imagem"
             >
               <X size={12} />
-            </button>
-            <button
-              type="button"
-              onClick={adjustCurrentImage}
-              disabled={preparingEditor || uploading}
-              className="absolute bottom-2 left-2 inline-flex items-center gap-1 bg-background/95 px-2 py-1 text-[10px] uppercase tracking-widest text-foreground shadow backdrop-blur hover:text-gold disabled:opacity-60"
-            >
-              <Crop size={11} /> {preparingEditor ? "Abrindo" : "Ajustar"}
             </button>
           </div>
         ) : (

@@ -221,43 +221,66 @@ function Home() {
         </div>
       </section>
 
-      <section className="bg-secondary/40">
+      <section className="relative overflow-hidden border-b border-border bg-secondary/30">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/45 to-transparent" />
         <div className="mx-auto max-w-7xl px-6 py-24">
-          <div className="mb-16 flex flex-col items-end justify-between gap-6 md:flex-row md:items-end">
+          <div className="mb-14 grid gap-8 md:grid-cols-[1fr_0.72fr] md:items-end">
             <div>
-              <p className="mb-4 text-xs uppercase tracking-[0.3em] text-gold">Três pilares</p>
-              <h2 className="font-serif text-4xl md:text-5xl">Por que existimos</h2>
+              <div className="mb-5 flex items-center gap-4">
+                <span className="h-px w-12 bg-gold/70" />
+                <p className="text-xs uppercase tracking-[0.35em] text-gold">Três pilares</p>
+              </div>
+              <h2 className="max-w-xl font-serif text-4xl leading-tight md:text-5xl">
+                Por que existimos
+              </h2>
             </div>
-            <p className="max-w-md text-muted-foreground">
+            <p className="max-w-md text-sm leading-7 text-muted-foreground md:justify-self-end">
               Uma plataforma na intersecção entre turismo experiencial, espiritualidade digital e
               preservação patrimonial.
             </p>
           </div>
-          <div className="grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-3">
             {[
               {
                 icon: Landmark,
+                numero: "01",
                 titulo: "Preservar",
                 texto:
                   "Escaneamento LIDAR + fotogrametria de altíssima precisão. Um backup digital permanente do patrimônio para futuras gerações e eventuais restauros.",
               },
               {
                 icon: Heart,
+                numero: "02",
                 titulo: "Conectar",
                 texto:
                   "Devotos no exterior, idosos, peregrinos e pessoas com mobilidade reduzida agora podem visitar o santuário de sua devoção sem barreiras.",
               },
               {
                 icon: Scan,
+                numero: "03",
                 titulo: "Eternizar",
                 texto:
                   "Cada altar, vitral e talha dourada documentado em 3D imersivo, com acervo de áudio-guias, história e iconografia narrada por especialistas.",
               },
-            ].map((p) => (
-              <div key={p.titulo} className="group bg-background p-10 transition hover:bg-card">
-                <p.icon size={28} className="text-gold" strokeWidth={1.4} />
-                <h3 className="mt-6 font-serif text-2xl">{p.titulo}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{p.texto}</p>
+            ].map((p, index) => (
+              <div
+                key={p.titulo}
+                className="group relative overflow-hidden border border-border/80 bg-background/80 p-8 shadow-[0_18px_55px_rgba(15,23,42,0.04)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-gold/40 hover:bg-background hover:shadow-[0_24px_70px_rgba(15,23,42,0.08)] md:p-9"
+              >
+                <span className="absolute right-6 top-5 font-serif text-5xl leading-none text-gold/10 transition group-hover:text-gold/20">
+                  {p.numero}
+                </span>
+                <div className="flex h-12 w-12 items-center justify-center border border-gold/25 bg-gold/10 text-gold">
+                  <p.icon size={22} strokeWidth={1.35} />
+                </div>
+                <div className="mt-8 h-px w-12 bg-gold/35 transition group-hover:w-20" />
+                <h3 className="mt-6 font-serif text-2xl text-foreground">{p.titulo}</h3>
+                <p className="mt-4 text-sm leading-7 text-muted-foreground">{p.texto}</p>
+                <div
+                  className={`pointer-events-none absolute inset-x-8 bottom-0 h-px bg-gradient-to-r from-transparent via-gold/45 to-transparent transition ${
+                    index === 1 ? "opacity-80" : "opacity-30"
+                  }`}
+                />
               </div>
             ))}
           </div>
