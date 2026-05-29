@@ -69,7 +69,7 @@ function PaginaEditor({ pagina, onSaved }: { pagina: Pagina; onSaved: () => void
       <Field label="Subtítulo / Eyebrow"><input value={form.subtitulo} onChange={(e) => setForm({ ...form, subtitulo: e.target.value })} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
       <Field label="Título principal"><input value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
       <Field label="Conteúdo (texto livre)"><textarea value={form.conteudo} onChange={(e) => setForm({ ...form, conteudo: e.target.value })} rows={12} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
-      <ImageUpload value={form.hero_imagem_url} onChange={(url) => setForm({ ...form, hero_imagem_url: url })} folder="paginas" label="Imagem hero (opcional)" />
+      <ImageUpload value={form.hero_imagem_url} onChange={(url) => setForm({ ...form, hero_imagem_url: url })} folder="paginas" label="Imagem hero (opcional)" aspectRatio={16 / 9} />
       <div className="flex justify-end">
         <button onClick={save} disabled={saving} className="bg-gold px-6 py-3 text-xs uppercase tracking-widest text-ink hover:bg-gold-soft disabled:opacity-50">{saving ? "Salvando…" : "Salvar alterações"}</button>
       </div>

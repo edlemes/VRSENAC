@@ -138,7 +138,7 @@ function NoticiaEditor({ initial, onClose, onSaved }: { initial: NoticiaInput | 
           <Field label="Slug (URL)"><input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder={slugify(form.titulo)} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
           <Field label="Resumo"><textarea value={form.resumo} onChange={(e) => setForm({ ...form, resumo: e.target.value })} rows={2} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
           <Field label="Conteúdo (markdown / texto)"><textarea value={form.conteudo} onChange={(e) => setForm({ ...form, conteudo: e.target.value })} rows={10} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
-          <ImageUpload value={form.imagem_url} onChange={(url) => setForm({ ...form, imagem_url: url })} folder="noticias" label="Imagem de capa" />
+          <ImageUpload value={form.imagem_url} onChange={(url) => setForm({ ...form, imagem_url: url })} folder="noticias" label="Imagem de capa" aspectRatio={16 / 9} />
           <label className="flex items-center gap-3 text-sm">
             <input type="checkbox" checked={form.publicado} onChange={(e) => setForm({ ...form, publicado: e.target.checked })} />
             Publicado

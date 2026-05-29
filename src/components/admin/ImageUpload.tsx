@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Upload, X, Link as LinkIcon, ImageIcon } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import type { PointerEvent } from "react";
+import { Upload, X, Link as LinkIcon, ImageIcon, Move, ZoomIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -8,11 +9,28 @@ type Props = {
   onChange: (url: string) => void;
   folder?: string;
   label?: string;
+  aspectRatio?: number;
 };
 
-export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem" }: Props) {
+type DragState = {
+  startX: number;
+  startY: number;
+  baseX: number;
+  baseY: number;
+};
+
+export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem", aspectRatio = 16 / 9 }: Props) {
   const [uploading, setUploading] = useState(false);
   const [mode, setMode] = useState<"upload" | "url">(value && /^https?:\/\//.test(value) && !value.includes("/storage/") ? "url" : "upload");
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [pendingUrl, setPendingUrl] = useState("");
+  const [zoom, setZoom] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [drag, setDrag] = useState<DragState | null>(null);
+  const [naturalSize, setNaturalSize] = useState({ width: 0, height: 0 });
+  const cropRef = useRef<HTMLDivElement>(null);
+
+  const cropAspect = useMemo(() => `${aspectRatio} / 1`, [aspectRatio]);
 
   const handleFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -23,11 +41,22 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
       toast.error("Imagem maior que 8MB. Reduza o tamanho e tente novamente.");
       return;
     }
+    setPendingFile(file);
+    setPendingUrl(URL.createObjectURL(file));
+    setZoom(1);
+    setOffset({ x: 0, y: 0 });
+    setNaturalSize({ width: 0, height: 0 });
+  };
+
+  const uploadFile = async (file: File) => {
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
-      const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const { error } = await supabase.storage.from("igrejas").upload(path, file, { cacheControl: "3600", upsert: false });
+      const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+      const { error } = await supabase.storage.from("igrejas").upload(path, file, {
+        cacheControl: "3600",
+        contentType: file.type,
+        upsert: false,
+      });
       if (error) throw error;
       const { data } = supabase.storage.from("igrejas").getPublicUrl(path);
       onChange(data.publicUrl);
@@ -37,6 +66,72 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
     } finally {
       setUploading(false);
     }
+  };
+
+  const resetEditor = () => {
+    if (pendingUrl) URL.revokeObjectURL(pendingUrl);
+    setPendingFile(null);
+    setPendingUrl("");
+    setDrag(null);
+  };
+
+  const confirmCrop = async () => {
+    if (!pendingFile || !pendingUrl || !naturalSize.width || !naturalSize.height || !cropRef.current) return;
+
+    const cropBox = cropRef.current.getBoundingClientRect();
+    const outputWidth = aspectRatio >= 1 ? 1600 : Math.round(1200 * aspectRatio);
+    const outputHeight = Math.round(outputWidth / aspectRatio);
+    const baseScale = Math.max(
+      outputWidth / naturalSize.width,
+      outputHeight / naturalSize.height,
+    );
+    const previewToOutput = outputWidth / cropBox.width;
+    const scale = baseScale * zoom;
+    const drawWidth = naturalSize.width * scale;
+    const drawHeight = naturalSize.height * scale;
+    const drawX = (outputWidth - drawWidth) / 2 + offset.x * previewToOutput;
+    const drawY = (outputHeight - drawHeight) / 2 + offset.y * previewToOutput;
+
+    const image = new Image();
+    image.src = pendingUrl;
+    await image.decode();
+
+    const canvas = document.createElement("canvas");
+    canvas.width = outputWidth;
+    canvas.height = outputHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      toast.error("Não foi possível preparar a imagem.");
+      return;
+    }
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, outputWidth, outputHeight);
+    ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", 0.9),
+    );
+    if (!blob) {
+      toast.error("Não foi possível gerar a imagem ajustada.");
+      return;
+    }
+
+    const adjusted = new File(
+      [blob],
+      `${pendingFile.name.replace(/\.[^.]+$/, "")}-ajustada.jpg`,
+      { type: "image/jpeg" },
+    );
+    resetEditor();
+    await uploadFile(adjusted);
+  };
+
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (!drag) return;
+    setOffset({
+      x: drag.baseX + event.clientX - drag.startX,
+      y: drag.baseY + event.clientY - drag.startY,
+    });
   };
 
   return (
@@ -109,6 +204,114 @@ export function ImageUpload({ value, onChange, folder = "geral", label = "Imagem
           )}
         </div>
       </div>
+
+      {pendingFile && pendingUrl && (
+        <div
+          className="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto bg-ink/80 p-4 backdrop-blur"
+          onClick={resetEditor}
+        >
+          <div
+            className="my-8 w-full max-w-4xl border border-border bg-background p-6 shadow-xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="font-serif text-2xl">Ajustar imagem</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Arraste com o mouse para enquadrar antes de postar.
+                </p>
+              </div>
+              <button type="button" onClick={resetEditor} aria-label="Fechar">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div
+              ref={cropRef}
+              className="relative mt-6 w-full cursor-move overflow-hidden border border-border bg-ink select-none"
+              style={{ aspectRatio: cropAspect }}
+              onPointerDown={(event) => {
+                event.currentTarget.setPointerCapture(event.pointerId);
+                setDrag({
+                  startX: event.clientX,
+                  startY: event.clientY,
+                  baseX: offset.x,
+                  baseY: offset.y,
+                });
+              }}
+              onPointerMove={onPointerMove}
+              onPointerUp={(event) => {
+                event.currentTarget.releasePointerCapture(event.pointerId);
+                setDrag(null);
+              }}
+              onPointerCancel={() => setDrag(null)}
+            >
+              <img
+                src={pendingUrl}
+                alt="Imagem para ajustar"
+                draggable={false}
+                onLoad={(event) => {
+                  setNaturalSize({
+                    width: event.currentTarget.naturalWidth,
+                    height: event.currentTarget.naturalHeight,
+                  });
+                }}
+                className="absolute left-1/2 top-1/2 h-full w-full max-w-none object-cover"
+                style={{
+                  transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px)) scale(${zoom})`,
+                }}
+              />
+              <div className="pointer-events-none absolute inset-4 border border-background/60" />
+              <div className="pointer-events-none absolute left-4 top-4 flex items-center gap-2 bg-ink/70 px-3 py-2 text-xs uppercase tracking-widest text-background backdrop-blur">
+                <Move size={13} /> Arraste para ajustar
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <label className="flex flex-1 items-center gap-3 text-xs uppercase tracking-widest text-muted-foreground">
+                <ZoomIn size={14} />
+                Zoom
+                <input
+                  type="range"
+                  min="1"
+                  max="2.8"
+                  step="0.05"
+                  value={zoom}
+                  onChange={(event) => setZoom(Number(event.target.value))}
+                  className="w-full accent-[oklch(0.75_0.13_85)]"
+                />
+              </label>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setZoom(1);
+                    setOffset({ x: 0, y: 0 });
+                  }}
+                  className="border border-border px-4 py-2 text-xs uppercase tracking-widest hover:bg-secondary"
+                >
+                  Centralizar
+                </button>
+                <button
+                  type="button"
+                  onClick={resetEditor}
+                  className="border border-border px-4 py-2 text-xs uppercase tracking-widest hover:bg-secondary"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmCrop}
+                  disabled={uploading}
+                  className="bg-gold px-5 py-2 text-xs uppercase tracking-widest text-ink hover:bg-gold-soft disabled:opacity-50"
+                >
+                  {uploading ? "Enviando…" : "Aplicar e enviar"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

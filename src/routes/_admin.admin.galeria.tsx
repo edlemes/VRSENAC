@@ -118,7 +118,7 @@ function FotoEditor({ initial, onClose, onSaved }: { initial: FotoInput | Foto; 
           <button onClick={onClose}><X size={20} /></button>
         </div>
         <div className="mt-6 space-y-5">
-          <ImageUpload value={form.imagem_url} onChange={(url) => setForm({ ...form, imagem_url: url })} folder="galeria" label="Imagem" />
+          <ImageUpload value={form.imagem_url} onChange={(url) => setForm({ ...form, imagem_url: url })} folder="galeria" label="Imagem" aspectRatio={1} />
           <Field label="Título"><input value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} placeholder="Ex.: Altar-mor da Igreja de São Francisco" className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
           <Field label="Legenda — explique a foto em uma frase simples">
             <textarea

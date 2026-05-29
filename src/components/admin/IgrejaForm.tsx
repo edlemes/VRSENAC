@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { type IgrejaInput, slugify, normalizeMatterportUrl } from "@/lib/igrejas";
-import { Plus, X, Upload, Loader2 } from "lucide-react";
-import { toast } from "sonner";
+import { Plus, X } from "lucide-react";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 type Props = {
   initial?: IgrejaInput & { id?: string };
@@ -25,7 +24,6 @@ export function IgrejaForm({ initial, saving, onSubmit, submitLabel }: Props) {
   const [destaque, setDestaque] = useState(initial?.destaque ?? false);
   const [pontos, setPontos] = useState<string[]>(initial?.pontos_de_fe ?? []);
   const [novoPonto, setNovoPonto] = useState("");
-  const [uploading, setUploading] = useState(false);
   const initialTours = initial?.tours_externos ?? [];
   const [tour1, setTour1] = useState(initialTours[0] ?? "");
   const [tour2, setTour2] = useState(initialTours[1] ?? "");
@@ -41,25 +39,6 @@ export function IgrejaForm({ initial, saving, onSubmit, submitLabel }: Props) {
     if (!v) return;
     setPontos((p) => [...p, v]);
     setNovoPonto("");
-  };
-
-  const handleUpload = async (file: File) => {
-    setUploading(true);
-    try {
-      const ext = file.name.split(".").pop() ?? "jpg";
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const { error } = await supabase.storage
-        .from("igrejas")
-        .upload(path, file, { upsert: false, contentType: file.type });
-      if (error) throw error;
-      const { data } = supabase.storage.from("igrejas").getPublicUrl(path);
-      setImagemUrl(data.publicUrl);
-      toast.success("Imagem enviada.");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha no upload");
-    } finally {
-      setUploading(false);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -162,42 +141,13 @@ export function IgrejaForm({ initial, saving, onSubmit, submitLabel }: Props) {
       </Field>
 
       <Field label="Imagem de capa">
-        <div className="space-y-3">
-          {imagemUrl && (
-            <img src={imagemUrl} alt="" className="aspect-[16/9] w-full max-w-md object-cover" />
-          )}
-          <div className="flex items-center gap-3">
-            <label className="inline-flex cursor-pointer items-center gap-2 border border-border px-4 py-2 text-xs uppercase tracking-widest hover:border-gold hover:text-gold">
-              {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
-              {uploading ? "Enviando…" : "Enviar imagem"}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                disabled={uploading}
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) handleUpload(f);
-                }}
-              />
-            </label>
-            {imagemUrl && (
-              <button
-                type="button"
-                onClick={() => setImagemUrl("")}
-                className="text-xs uppercase tracking-widest text-muted-foreground hover:text-destructive"
-              >
-                Remover
-              </button>
-            )}
-          </div>
-          <input
-            value={imagemUrl}
-            onChange={(e) => setImagemUrl(e.target.value)}
-            placeholder="ou cole uma URL"
-            className="form-input text-xs"
-          />
-        </div>
+        <ImageUpload
+          value={imagemUrl}
+          onChange={setImagemUrl}
+          folder="igrejas"
+          label=""
+          aspectRatio={16 / 9}
+        />
       </Field>
 
       <Field label="Pontos de fé">
@@ -291,7 +241,7 @@ export function IgrejaForm({ initial, saving, onSubmit, submitLabel }: Props) {
       <div className="flex items-center gap-3 border-t border-border pt-6">
         <button
           type="submit"
-          disabled={saving || uploading}
+          disabled={saving}
           className="bg-gold px-6 py-3 text-xs uppercase tracking-widest text-ink transition hover:bg-gold-soft disabled:opacity-50"
         >
           {saving ? "Salvando…" : submitLabel}

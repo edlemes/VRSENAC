@@ -125,7 +125,7 @@ function SlideEditor({ initial, onClose, onSaved }: { initial: SlideInput | Slid
           <button onClick={onClose}><X size={20} /></button>
         </div>
         <div className="mt-6 space-y-5">
-          <ImageUpload value={form.imagem_url} onChange={(url) => setForm({ ...form, imagem_url: url })} folder="carrossel" label="Imagem (1920×1080)" />
+          <ImageUpload value={form.imagem_url} onChange={(url) => setForm({ ...form, imagem_url: url })} folder="carrossel" label="Imagem (1920×1080)" aspectRatio={16 / 9} />
           <Field label="Título"><input value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
           <Field label="Subtítulo / legenda"><input value={form.subtitulo} onChange={(e) => setForm({ ...form, subtitulo: e.target.value })} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
           <Field label="Link (opcional)"><input value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} placeholder="/igrejas/..." className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
