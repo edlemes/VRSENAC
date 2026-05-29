@@ -12,7 +12,10 @@ import { useEffect } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
 import { SplashIntro } from "@/components/SplashIntro";
+import senacLogo from "@/assets/senac-logo.png";
 import appCss from "../styles.css?url";
+
+const siteTitle = "Futuro Simulado A Nova Era do Turismo";
 
 function NotFoundComponent() {
   return (
@@ -76,10 +79,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "Sagrado Digital — Senac MT" },
+      { title: siteTitle },
       { name: "description", content: "Tours virtuais 3D de igrejas e santuários do Brasil — uma iniciativa Senac MT" },
       { name: "author", content: "Senac MT" },
-      { property: "og:title", content: "Sagrado Digital — Senac MT" },
+      { property: "og:title", content: siteTitle },
       { property: "og:description", content: "Tours virtuais 3D de igrejas e santuários do Brasil" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -89,6 +92,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        href: senacLogo,
+      },
+      {
+        rel: "apple-touch-icon",
+        href: senacLogo,
       },
     ],
   }),

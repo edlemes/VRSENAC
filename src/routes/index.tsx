@@ -12,13 +12,13 @@ import type { Igreja } from "@/lib/igrejas";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sagrado Digital — Tours virtuais 3D de igrejas e santuários do Brasil" },
+      { title: "Futuro Simulado A Nova Era do Turismo" },
       {
         name: "description",
         content:
           "Visite por dentro as catedrais, basílicas e santuários históricos do Brasil em 3D imersivo. Acenda uma vela, faça uma oração, eternize o patrimônio.",
       },
-      { property: "og:title", content: "Sagrado Digital — Patrimônio religioso em 3D" },
+      { property: "og:title", content: "Futuro Simulado A Nova Era do Turismo" },
       {
         property: "og:description",
         content:
