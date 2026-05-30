@@ -16,7 +16,9 @@ import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RoteiroFeIndexRouteImport } from './routes/roteiro-fe.index'
 import { Route as IgrejasIndexRouteImport } from './routes/igrejas.index'
+import { Route as RoteiroFeSlugRouteImport } from './routes/roteiro-fe.$slug'
 import { Route as IgrejasSlugRouteImport } from './routes/igrejas.$slug'
 import { Route as AdminTrocarSenhaRouteImport } from './routes/admin.trocar-senha'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
@@ -65,9 +67,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RoteiroFeIndexRoute = RoteiroFeIndexRouteImport.update({
+  id: '/roteiro-fe/',
+  path: '/roteiro-fe/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IgrejasIndexRoute = IgrejasIndexRouteImport.update({
   id: '/igrejas/',
   path: '/igrejas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoteiroFeSlugRoute = RoteiroFeSlugRouteImport.update({
+  id: '/roteiro-fe/$slug',
+  path: '/roteiro-fe/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IgrejasSlugRoute = IgrejasSlugRouteImport.update({
@@ -146,7 +158,9 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/admin/trocar-senha': typeof AdminTrocarSenhaRoute
   '/igrejas/$slug': typeof IgrejasSlugRoute
+  '/roteiro-fe/$slug': typeof RoteiroFeSlugRoute
   '/igrejas/': typeof IgrejasIndexRoute
+  '/roteiro-fe/': typeof RoteiroFeIndexRoute
   '/admin/carrossel': typeof AdminAdminCarrosselRoute
   '/admin/galeria': typeof AdminAdminGaleriaRoute
   '/admin/noticias': typeof AdminAdminNoticiasRoute
@@ -168,7 +182,9 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin/trocar-senha': typeof AdminTrocarSenhaRoute
   '/igrejas/$slug': typeof IgrejasSlugRoute
+  '/roteiro-fe/$slug': typeof RoteiroFeSlugRoute
   '/igrejas': typeof IgrejasIndexRoute
+  '/roteiro-fe': typeof RoteiroFeIndexRoute
   '/admin/carrossel': typeof AdminAdminCarrosselRoute
   '/admin/galeria': typeof AdminAdminGaleriaRoute
   '/admin/noticias': typeof AdminAdminNoticiasRoute
@@ -192,7 +208,9 @@ export interface FileRoutesById {
   '/admin/login': typeof AdminLoginRoute
   '/admin/trocar-senha': typeof AdminTrocarSenhaRoute
   '/igrejas/$slug': typeof IgrejasSlugRoute
+  '/roteiro-fe/$slug': typeof RoteiroFeSlugRoute
   '/igrejas/': typeof IgrejasIndexRoute
+  '/roteiro-fe/': typeof RoteiroFeIndexRoute
   '/_admin/admin/carrossel': typeof AdminAdminCarrosselRoute
   '/_admin/admin/galeria': typeof AdminAdminGaleriaRoute
   '/_admin/admin/noticias': typeof AdminAdminNoticiasRoute
@@ -216,7 +234,9 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/trocar-senha'
     | '/igrejas/$slug'
+    | '/roteiro-fe/$slug'
     | '/igrejas/'
+    | '/roteiro-fe/'
     | '/admin/carrossel'
     | '/admin/galeria'
     | '/admin/noticias'
@@ -238,7 +258,9 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/trocar-senha'
     | '/igrejas/$slug'
+    | '/roteiro-fe/$slug'
     | '/igrejas'
+    | '/roteiro-fe'
     | '/admin/carrossel'
     | '/admin/galeria'
     | '/admin/noticias'
@@ -261,7 +283,9 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/trocar-senha'
     | '/igrejas/$slug'
+    | '/roteiro-fe/$slug'
     | '/igrejas/'
+    | '/roteiro-fe/'
     | '/_admin/admin/carrossel'
     | '/_admin/admin/galeria'
     | '/_admin/admin/noticias'
@@ -285,7 +309,9 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminTrocarSenhaRoute: typeof AdminTrocarSenhaRoute
   IgrejasSlugRoute: typeof IgrejasSlugRoute
+  RoteiroFeSlugRoute: typeof RoteiroFeSlugRoute
   IgrejasIndexRoute: typeof IgrejasIndexRoute
+  RoteiroFeIndexRoute: typeof RoteiroFeIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -339,11 +365,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/roteiro-fe/': {
+      id: '/roteiro-fe/'
+      path: '/roteiro-fe'
+      fullPath: '/roteiro-fe/'
+      preLoaderRoute: typeof RoteiroFeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/igrejas/': {
       id: '/igrejas/'
       path: '/igrejas'
       fullPath: '/igrejas/'
       preLoaderRoute: typeof IgrejasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roteiro-fe/$slug': {
+      id: '/roteiro-fe/$slug'
+      path: '/roteiro-fe/$slug'
+      fullPath: '/roteiro-fe/$slug'
+      preLoaderRoute: typeof RoteiroFeSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/igrejas/$slug': {
@@ -479,7 +519,9 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminTrocarSenhaRoute: AdminTrocarSenhaRoute,
   IgrejasSlugRoute: IgrejasSlugRoute,
+  RoteiroFeSlugRoute: RoteiroFeSlugRoute,
   IgrejasIndexRoute: IgrejasIndexRoute,
+  RoteiroFeIndexRoute: RoteiroFeIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -6,6 +6,7 @@ import { hasSupabaseConfig, supabase } from "@/integrations/supabase/client";
 
 const links = [
   { to: "/", label: "Início" },
+  { to: "/roteiro-fe", label: "Roteiro da Fé" },
   { to: "/noticias", label: "Notícias" },
   { to: "/galeria", label: "Galeria" },
 ];
