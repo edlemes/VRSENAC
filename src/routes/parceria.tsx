@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { useState } from "react";
@@ -9,6 +10,7 @@ import {
   uploadSolicitacaoMidia,
   type SolicitacaoInput,
 } from "@/lib/solicitacoes";
+import { getPagina, splitParagrafos } from "@/lib/paginas";
 
 export const Route = createFileRoute("/parceria")({
   head: () => ({
@@ -64,6 +66,16 @@ function Parceria() {
   const [uploading, setUploading] = useState(false);
   const [enviado, setEnviado] = useState(false);
 
+  // Conteúdo editável pelo Painel Admin (Páginas → Parceria); cai no padrão se vazio.
+  const { data: pagina } = useQuery({
+    queryKey: ["pagina", "parceria"],
+    queryFn: () => getPagina("parceria"),
+  });
+  const eyebrow = pagina?.subtitulo?.trim();
+  const titulo = pagina?.titulo?.trim();
+  const conteudo = pagina?.conteudo?.trim();
+  const heroImg = pagina?.hero_imagem_url?.trim();
+
   function update<K extends keyof Form>(k: K, v: Form[K]) {
     setForm((f) => ({ ...f, [k]: v }));
   }
@@ -113,15 +125,31 @@ function Parceria() {
       <section className="border-b border-border">
         <div className="mx-auto grid max-w-7xl gap-16 px-6 py-24 lg:grid-cols-2">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-gold">Para Paróquias</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-gold">{eyebrow || "Para Paróquias"}</p>
             <h1 className="mt-6 font-serif text-5xl leading-[1.05] md:text-6xl">
-              Sua igreja, eternizada em pixels.
+              {titulo || "Sua igreja, eternizada em pixels."}
             </h1>
-            <p className="mt-8 text-lg text-muted-foreground">
-              Cadastre a ficha do seu santuário e envie fotos e vídeos para que nossa equipe avalie
-              a inclusão no acervo de tours virtuais 360°. O escaneamento, a produção do tour e a
-              hospedagem do gêmeo digital são oferecidos sem custo no programa piloto.
-            </p>
+            {conteudo ? (
+              <div className="mt-8 space-y-4 whitespace-pre-line text-lg text-muted-foreground">
+                {splitParagrafos(conteudo).map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-8 text-lg text-muted-foreground">
+                Cadastre a ficha do seu santuário e envie fotos e vídeos para que nossa equipe avalie
+                a inclusão no acervo de tours virtuais 360°. O escaneamento, a produção do tour e a
+                hospedagem do gêmeo digital são oferecidos sem custo no programa piloto.
+              </p>
+            )}
+            {heroImg && (
+              <img
+                src={heroImg}
+                alt=""
+                loading="lazy"
+                className="mt-8 aspect-[16/9] w-full rounded-md border border-border object-cover"
+              />
+            )}
             <ul className="mt-10 space-y-3 text-sm">
               {[
                 "Escaneamento profissional LIDAR + fotogrametria",

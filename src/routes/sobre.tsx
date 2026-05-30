@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { getPagina, splitParagrafos } from "@/lib/paginas";
 import { Camera, Glasses, Mic, Globe, Layers, ScanLine } from "lucide-react";
 
 export const Route = createFileRoute("/sobre")({
@@ -24,22 +26,54 @@ export const Route = createFileRoute("/sobre")({
 });
 
 function Sobre() {
+  // Conteúdo editável pelo Painel Admin (Páginas → Sobre); cai no texto padrão se vazio.
+  const { data: pagina } = useQuery({
+    queryKey: ["pagina", "sobre"],
+    queryFn: () => getPagina("sobre"),
+  });
+  const eyebrow = pagina?.subtitulo?.trim();
+  const titulo = pagina?.titulo?.trim();
+  const conteudo = pagina?.conteudo?.trim();
+  const heroImg = pagina?.hero_imagem_url?.trim();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
       <section className="border-b border-border">
         <div className="mx-auto max-w-5xl px-6 py-28">
-          <p className="text-xs uppercase tracking-[0.3em] text-gold">Manifesto</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-gold">{eyebrow || "Manifesto"}</p>
           <h1 className="mt-6 font-serif text-5xl leading-[1.1] md:text-7xl">
-            Preservar é também um <em className="text-gold not-italic">ato de fé</em>.
+            {titulo ? (
+              titulo
+            ) : (
+              <>
+                Preservar é também um <em className="text-gold not-italic">ato de fé</em>.
+              </>
+            )}
           </h1>
-          <p className="mt-10 max-w-3xl text-xl leading-relaxed text-muted-foreground">
-            O Brasil abriga o maior conjunto barroco do mundo e a maior população católica do
-            planeta. Mesmo assim, dezenas de igrejas históricas se deterioram a cada ano — e
-            algumas, como vimos em Notre-Dame e no Museu Nacional, podem desaparecer em uma única
-            noite. O <strong className="text-foreground">Sagrado Digital</strong> nasce para que
-            isso nunca aconteça em silêncio.
-          </p>
+          {conteudo ? (
+            <div className="mt-10 max-w-3xl space-y-5 whitespace-pre-line text-xl leading-relaxed text-muted-foreground">
+              {splitParagrafos(conteudo).map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-10 max-w-3xl text-xl leading-relaxed text-muted-foreground">
+              O Brasil abriga o maior conjunto barroco do mundo e a maior população católica do
+              planeta. Mesmo assim, dezenas de igrejas históricas se deterioram a cada ano — e
+              algumas, como vimos em Notre-Dame e no Museu Nacional, podem desaparecer em uma única
+              noite. O <strong className="text-foreground">Sagrado Digital</strong> nasce para que
+              isso nunca aconteça em silêncio.
+            </p>
+          )}
+          {heroImg && (
+            <img
+              src={heroImg}
+              alt=""
+              loading="lazy"
+              className="mt-12 aspect-[16/9] w-full rounded-md border border-border object-cover"
+            />
+          )}
         </div>
       </section>
 
