@@ -20,6 +20,26 @@ const tabTitle = "Futuro Simulado | A Nova Era do Turismo";
 const tabTitleMarquee = `${tabTitle}      `;
 const tabTitleWindowSize = 34;
 
+function getPublicSupabaseEnv() {
+  const processEnv =
+    typeof process !== "undefined" && process.env
+      ? process.env
+      : ({} as Record<string, string | undefined>);
+
+  return {
+    url: import.meta.env.VITE_SUPABASE_URL || processEnv.VITE_SUPABASE_URL || processEnv.SUPABASE_URL || "",
+    publishableKey:
+      import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+      processEnv.VITE_SUPABASE_PUBLISHABLE_KEY ||
+      processEnv.SUPABASE_PUBLISHABLE_KEY ||
+      "",
+  };
+}
+
+function serializePublicEnv(env: ReturnType<typeof getPublicSupabaseEnv>) {
+  return `window.__SUPABASE_ENV__=${JSON.stringify(env).replace(/</g, "\\u003c")};`;
+}
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -114,9 +134,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  const publicSupabaseEnv = getPublicSupabaseEnv();
+
   return (
     <html lang="en">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: serializePublicEnv(publicSupabaseEnv) }} />
         <HeadContent />
       </head>
       <body>

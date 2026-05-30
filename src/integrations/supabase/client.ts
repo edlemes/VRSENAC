@@ -2,16 +2,34 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
+declare global {
+  interface Window {
+    __SUPABASE_ENV__?: {
+      url?: string;
+      publishableKey?: string;
+    };
+  }
+}
+
 function getSupabaseEnv() {
+  const viteEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
+  const browserEnv = typeof window !== 'undefined' ? window.__SUPABASE_ENV__ : undefined;
   const processEnv =
     typeof process !== 'undefined' && process.env
       ? process.env
       : ({} as Record<string, string | undefined>);
 
   return {
-    url: import.meta.env.VITE_SUPABASE_URL || processEnv.SUPABASE_URL,
+    url:
+      viteEnv.VITE_SUPABASE_URL ||
+      browserEnv?.url ||
+      processEnv.VITE_SUPABASE_URL ||
+      processEnv.SUPABASE_URL,
     publishableKey:
-      import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || processEnv.SUPABASE_PUBLISHABLE_KEY,
+      viteEnv.VITE_SUPABASE_PUBLISHABLE_KEY ||
+      browserEnv?.publishableKey ||
+      processEnv.VITE_SUPABASE_PUBLISHABLE_KEY ||
+      processEnv.SUPABASE_PUBLISHABLE_KEY,
   };
 }
 
