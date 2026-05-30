@@ -29,8 +29,8 @@ export function SiteFooter() {
               </span>
               <span className="h-10 w-px bg-border" />
               <span className="flex min-w-0 flex-col leading-tight">
-                <span className="truncate font-serif text-xl text-foreground sm:text-2xl">Futuro Simulado</span>
-                <span className="truncate text-[10px] uppercase tracking-[0.18em] text-gold sm:text-[11px] sm:tracking-[0.24em]">A Nova Era do Turismo</span>
+                <span className="truncate font-serif text-xl text-foreground sm:text-2xl">{t("common.brandTitle")}</span>
+                <span className="truncate text-[10px] uppercase tracking-[0.18em] text-gold sm:text-[11px] sm:tracking-[0.24em]">{t("common.brandSubtitle")}</span>
               </span>
             </div>
             <p className="mt-6 max-w-xl text-sm leading-7 text-muted-foreground">
@@ -119,7 +119,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <span>© {new Date().getFullYear()} Sagrado Digital. {t("footer.copyright")}</span>
+          <span>© {new Date().getFullYear()} {t("common.brandTitle")}. {t("footer.copyright")}</span>
           <a href="https://www.mt.senac.br/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 transition hover:text-foreground">
             {t("footer.officialSite")} <ExternalLink size={12} />
           </a>

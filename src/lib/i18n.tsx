@@ -275,7 +275,7 @@ const resources: Record<Language, Dictionary> = {
   en: {
     common: {
       brandTitle: "Simulated Future",
-      brandSubtitle: "The New Era of Tourism",
+      brandSubtitle: "A Nova Era do Turismo",
       adminPanel: "Admin panel",
       enter: "Sign in",
       exploreTours: "Explore Tours",
@@ -534,7 +534,7 @@ const resources: Record<Language, Dictionary> = {
   es: {
     common: {
       brandTitle: "Futuro Simulado",
-      brandSubtitle: "La Nueva Era del Turismo",
+      brandSubtitle: "A Nova Era do Turismo",
       adminPanel: "Panel admin",
       enter: "Entrar",
       exploreTours: "Explorar Tours",
