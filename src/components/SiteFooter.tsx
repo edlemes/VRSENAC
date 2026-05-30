@@ -9,7 +9,7 @@ const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(address)}&out
 
 const socialLinks = [
   { label: "Facebook", href: "https://www.facebook.com/senacmt", icon: Facebook },
-  { label: "Instagram", href: "https://www.instagram.com/senacmt/", icon: Instagram },
+  { label: "Instagram", href: "https://www.instagram.com/senacmt", icon: Instagram },
   { label: "LinkedIn", href: "https://br.linkedin.com/company/senac-mt", icon: Linkedin },
   { label: "YouTube", href: "https://www.youtube.com/@SenacMatoGrosso", icon: Youtube },
 ];
