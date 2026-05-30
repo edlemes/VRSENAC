@@ -3,7 +3,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeloMedalhao } from "@/components/SeloMedalhao";
-import { getTemplo, TEMPLOS, type Badge, type Passo, type Templo } from "@/lib/templos";
+import { getTemplo, getTemplos, getTemploLocalizado, type Badge, type Passo, type Templo } from "@/lib/templos";
+import { useI18n } from "@/lib/i18n";
 import {
   useProgresso,
   concluirPasso,
@@ -47,14 +48,16 @@ export const Route = createFileRoute("/roteiro-fe/$slug")({
 
 function TrilhaDedicada() {
   const { slug } = Route.useParams();
+  const { language } = useI18n();
   const progresso = useProgresso();
-  const templo = getTemplo(slug);
+  const templos = getTemplos(language);
+  const templo = getTemploLocalizado(language, slug);
 
   if (!templo) return <TrilhaNaoEncontrada />;
 
   // Fases sequenciais: bloqueia se a trilha anterior não estiver concluída.
-  const indice = TEMPLOS.findIndex((x) => x.slug === templo.slug);
-  const anterior = indice > 0 ? TEMPLOS[indice - 1] : null;
+  const indice = templos.findIndex((x) => x.slug === templo.slug);
+  const anterior = indice > 0 ? templos[indice - 1] : null;
   if (anterior && !trilhaCompleta(progresso, anterior.slug)) {
     return <FaseTravada anterior={anterior} atual={templo} />;
   }
@@ -63,6 +66,7 @@ function TrilhaDedicada() {
 }
 
 function TrilhaConteudo({ templo: t }: { templo: Templo }) {
+  const { t: tr } = useI18n();
   const progresso = useProgresso();
   const concluidos = progresso[t.slug] ?? [];
   const feitos = contarConcluidos(progresso, t.slug);
@@ -98,7 +102,7 @@ function TrilhaConteudo({ templo: t }: { templo: Templo }) {
             to="/roteiro-fe"
             className="inline-flex min-h-12 items-center gap-2 text-xs uppercase tracking-widest text-background/70 transition hover:text-background"
           >
-            <ArrowLeft size={14} /> Todas as trilhas
+            <ArrowLeft size={14} /> {tr("faith.allTrails")}
           </Link>
 
           <div className="mt-6 flex items-start gap-4">
@@ -115,7 +119,7 @@ function TrilhaConteudo({ templo: t }: { templo: Templo }) {
                 {t.nome}
               </h1>
               <p className="mt-2 text-sm font-medium uppercase tracking-wide text-background/70">
-                Linha do tempo · {t.trilha.foco}
+                {tr("faith.timeline")} · {t.trilha.foco}
               </p>
             </div>
           </div>
@@ -125,10 +129,12 @@ function TrilhaConteudo({ templo: t }: { templo: Templo }) {
             <SeloMedalhao slug={t.slug} ganho={completa} size={52} />
             <div className="min-w-0">
               <p className="text-[11px] uppercase tracking-[0.25em] text-gold-soft">
-                Selo {t.trilha.badge.sigla}
+                {tr("faith.sealLabel")} {t.trilha.badge.sigla}
               </p>
               <p className="truncate text-sm text-background/80">
-                {completa ? `Conquistado: ${t.trilha.badge.titulo}` : `Conclua a trilha e torne-se ${t.trilha.badge.titulo}`}
+                {completa
+                  ? `${tr("faith.sealEarned")} ${t.trilha.badge.titulo}`
+                  : `${tr("faith.earnAndBecome")} ${t.trilha.badge.titulo}`}
               </p>
             </div>
           </div>
@@ -136,9 +142,9 @@ function TrilhaConteudo({ templo: t }: { templo: Templo }) {
           {/* Barra de progresso */}
           <div className="mt-6">
             <div className="flex items-center justify-between text-[11px] uppercase tracking-widest text-background/70">
-              <span>{pct}% concluído</span>
+              <span>{pct}% {tr("faith.percentDone")}</span>
               <span>
-                {feitos}/{total} módulos
+                {feitos}/{total} {tr("faith.modules")}
               </span>
             </div>
             <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-white/10">
@@ -193,7 +199,7 @@ function TrilhaConteudo({ templo: t }: { templo: Templo }) {
                   <SeloMedalhao slug={t.slug} ganho size={104} />
                 </div>
                 <p className="mt-5 flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.25em] text-gold-soft">
-                  <Sparkles size={14} className="text-gold" /> Selo conquistado
+                  <Sparkles size={14} className="text-gold" /> {tr("faith.sealUnlocked")}
                 </p>
                 <h2 className="mt-2 font-serif text-2xl text-white">
                   {t.trilha.badge.titulo}
@@ -211,14 +217,14 @@ function TrilhaConteudo({ templo: t }: { templo: Templo }) {
                     to="/roteiro-fe"
                     className="inline-flex min-h-12 items-center gap-2 bg-accent px-5 text-xs font-semibold uppercase tracking-widest text-accent-foreground transition hover:opacity-90"
                   >
-                    Próxima trilha <ArrowRight size={14} />
+                    {tr("faith.nextTrail")} <ArrowRight size={14} />
                   </Link>
                   <button
                     type="button"
                     onClick={() => reiniciarTrilha(t.slug)}
                     className="inline-flex min-h-12 items-center gap-2 border border-white/20 px-5 text-xs font-semibold uppercase tracking-widest text-background/80 transition hover:border-white/50 hover:text-white"
                   >
-                    <RotateCcw size={13} /> Refazer
+                    <RotateCcw size={13} /> {tr("faith.redo")}
                   </button>
                 </div>
               </div>
@@ -231,7 +237,7 @@ function TrilhaConteudo({ templo: t }: { templo: Templo }) {
               to="/igrejas"
               className="group inline-flex min-h-12 items-center gap-3 text-xs uppercase tracking-widest text-background/70 transition hover:text-background"
             >
-              Ver este templo no acervo 3D
+              {tr("faith.seeIn3d")}
               <ArrowRight size={14} className="transition group-hover:translate-x-1" />
             </Link>
           </div>
@@ -265,6 +271,7 @@ function ModuloTimeline({
   tema: Templo["tema"];
   onConcluir: () => void;
 }) {
+  const { t: tr } = useI18n();
   return (
     <li className="relative pb-8 pl-16 last:pb-0 sm:pl-20">
       {/* Nó no trilho */}
@@ -312,7 +319,7 @@ function ModuloTimeline({
         <div className="flex items-start justify-between gap-3 px-5 pt-5 sm:px-6">
           <div className="min-w-0">
             <span className="block text-[10px] uppercase tracking-[0.25em] text-background/50">
-              Módulo {index + 1} de {total}
+              {tr("faith.module")} {index + 1} {tr("faith.of")} {total}
             </span>
             <h2 className="mt-1 font-serif text-xl text-white sm:text-2xl">{passo.titulo}</h2>
           </div>
@@ -350,7 +357,7 @@ function ModuloTimeline({
               {/* Mini-desafio / curiosidade rápida */}
               <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.04] p-4">
                 <p className={`flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] ${tema.realce}`}>
-                  <Lightbulb size={13} /> Curiosidade rápida
+                  <Lightbulb size={13} /> {tr("faith.quickFact")}
                 </p>
                 <p className="mt-2 text-sm leading-7 text-background/80">{passo.curiosidade}</p>
               </div>
@@ -358,7 +365,7 @@ function ModuloTimeline({
               {/* Marcar como compreendido */}
               {feito ? (
                 <p className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gold">
-                  <CheckCircle2 size={15} /> Compreendido
+                  <CheckCircle2 size={15} /> {tr("faith.understood")}
                 </p>
               ) : (
                 <button
@@ -366,7 +373,7 @@ function ModuloTimeline({
                   onClick={onConcluir}
                   className="mt-5 inline-flex min-h-12 items-center gap-2 rounded-full bg-accent px-5 text-xs font-semibold uppercase tracking-widest text-accent-foreground transition hover:-translate-y-0.5 hover:opacity-90"
                 >
-                  <CheckCircle2 size={15} /> Marcar como compreendido
+                  <CheckCircle2 size={15} /> {tr("faith.markUnderstood")}
                 </button>
               )}
             </div>
@@ -376,7 +383,7 @@ function ModuloTimeline({
         {/* Aviso de bloqueio */}
         {!desbloqueado && (
           <p className="flex items-center gap-2 px-5 pb-5 text-xs text-background/45 sm:px-6">
-            <Lock size={12} /> Conclua o módulo anterior para desbloquear.
+            <Lock size={12} /> {tr("faith.unlockPrevious")}
           </p>
         )}
       </article>
@@ -403,6 +410,7 @@ function AcronimoSenac({ badge }: { badge: Badge }) {
 }
 
 function SeloOverlay({ templo: t, onFechar }: { templo: Templo; onFechar: () => void }) {
+  const { t: tr } = useI18n();
   // Fecha com ESC e bloqueia rolagem de fundo enquanto aberto.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onFechar();
@@ -446,14 +454,14 @@ function SeloOverlay({ templo: t, onFechar }: { templo: Templo; onFechar: () => 
           <button
             type="button"
             onClick={onFechar}
-            aria-label="Fechar"
+            aria-label={tr("faith.close")}
             className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full text-background/60 transition hover:bg-white/10 hover:text-white"
           >
             <X size={18} />
           </button>
 
           <p className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.3em] text-gold-soft">
-            <Sparkles size={14} className="text-gold" /> Trilha concluída!
+            <Sparkles size={14} className="text-gold" /> {tr("faith.trailComplete")}
           </p>
 
           <div className="mx-auto mt-6 w-fit">
@@ -470,7 +478,7 @@ function SeloOverlay({ templo: t, onFechar }: { templo: Templo; onFechar: () => 
           </div>
 
           <p className="mt-6 text-sm text-background/80">
-            Parabéns! Você dominou a trilha “{t.trilha.foco}” do {t.nome}.
+            {tr("faith.congratsPrefix")} “{t.trilha.foco}” {tr("faith.congratsConnector")} {t.nome}.
           </p>
 
           <div className="mt-7 flex flex-col gap-3">
@@ -478,14 +486,14 @@ function SeloOverlay({ templo: t, onFechar }: { templo: Templo; onFechar: () => 
               to="/roteiro-fe"
               className="inline-flex min-h-12 items-center justify-center gap-2 bg-accent text-xs font-semibold uppercase tracking-widest text-accent-foreground transition hover:opacity-90"
             >
-              Conquistar outro selo <ArrowRight size={14} />
+              {tr("faith.earnAnother")} <ArrowRight size={14} />
             </Link>
             <button
               type="button"
               onClick={onFechar}
               className="inline-flex min-h-12 items-center justify-center text-xs font-semibold uppercase tracking-widest text-background/70 transition hover:text-white"
             >
-              Continuar nesta trilha
+              {tr("faith.continueHere")}
             </button>
           </div>
         </div>
@@ -505,6 +513,7 @@ const SPARKLES = [
 ];
 
 function FaseTravada({ anterior, atual }: { anterior: Templo; atual: Templo }) {
+  const { t: tr } = useI18n();
   return (
     <div className="min-h-screen bg-ink text-background">
       <SiteHeader />
@@ -512,14 +521,13 @@ function FaseTravada({ anterior, atual }: { anterior: Templo; atual: Templo }) {
         <span className="grid h-20 w-20 place-items-center rounded-full border-2 border-white/15 bg-white/[0.04] text-white/40">
           <Lock size={30} />
         </span>
-        <p className="mt-8 text-[11px] uppercase tracking-[0.3em] text-gold-soft">Fase bloqueada</p>
+        <p className="mt-8 text-[11px] uppercase tracking-[0.3em] text-gold-soft">{tr("faith.lockedTitle")}</p>
         <h1 className="mt-3 font-serif text-3xl leading-tight text-white sm:text-4xl">
           {atual.nome}
         </h1>
         <p className="mt-5 max-w-md text-background/75">
-          Esta é uma jornada sequencial. Conclua antes a fase{" "}
-          <span className="font-semibold text-gold">{anterior.nome}</span> para forjar seu selo e
-          desbloquear esta etapa.
+          {tr("faith.lockedDesc1")}{" "}
+          <span className="font-semibold text-gold">{anterior.nome}</span> {tr("faith.lockedDesc2")}
         </p>
         <div className="mt-9 flex flex-wrap justify-center gap-3">
           <Link
@@ -527,14 +535,14 @@ function FaseTravada({ anterior, atual }: { anterior: Templo; atual: Templo }) {
             params={{ slug: anterior.slug }}
             className="group inline-flex min-h-12 items-center gap-2 bg-accent px-6 text-xs font-semibold uppercase tracking-widest text-accent-foreground transition hover:opacity-90"
           >
-            Ir para a fase anterior
+            {tr("faith.goPrevious")}
             <ArrowRight size={14} className="transition group-hover:translate-x-1" />
           </Link>
           <Link
             to="/roteiro-fe"
             className="inline-flex min-h-12 items-center gap-2 border border-white/20 px-6 text-xs font-semibold uppercase tracking-widest text-background/80 transition hover:border-white/50 hover:text-white"
           >
-            <ArrowLeft size={14} /> Todas as fases
+            <ArrowLeft size={14} /> {tr("faith.allPhases")}
           </Link>
         </div>
       </section>
@@ -544,19 +552,18 @@ function FaseTravada({ anterior, atual }: { anterior: Templo; atual: Templo }) {
 }
 
 function TrilhaNaoEncontrada() {
+  const { t: tr } = useI18n();
   return (
     <div className="min-h-screen bg-ink text-background">
       <SiteHeader />
       <section className="mx-auto flex max-w-xl flex-col items-center px-6 py-32 text-center">
-        <h1 className="font-serif text-4xl text-white">Trilha não encontrada</h1>
-        <p className="mt-4 text-background/70">
-          Esta trilha de aprendizagem não existe ou foi movida.
-        </p>
+        <h1 className="font-serif text-4xl text-white">{tr("faith.notFoundTitle")}</h1>
+        <p className="mt-4 text-background/70">{tr("faith.notFoundDesc")}</p>
         <Link
           to="/roteiro-fe"
           className="mt-8 inline-flex min-h-12 items-center gap-2 bg-accent px-6 text-xs font-semibold uppercase tracking-widest text-accent-foreground transition hover:opacity-90"
         >
-          <ArrowLeft size={14} /> Ver todas as trilhas
+          <ArrowLeft size={14} /> {tr("faith.seeAllTrails")}
         </Link>
       </section>
       <SiteFooter />

@@ -3,7 +3,8 @@ import { Fragment, useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeloMedalhao } from "@/components/SeloMedalhao";
-import { TEMPLOS, type Templo } from "@/lib/templos";
+import { TEMPLOS, getTemplos, type Templo } from "@/lib/templos";
+import { useI18n } from "@/lib/i18n";
 import {
   useProgresso,
   percentual,
@@ -215,8 +216,10 @@ function FaithRouteBackdrop() {
 }
 
 function TrilhasHub() {
+  const { t, language } = useI18n();
   const progresso = useProgresso();
-  const ganhos = TEMPLOS.filter((t) => trilhaCompleta(progresso, t.slug)).map((t) => t.slug);
+  const templos = getTemplos(language);
+  const ganhos = templos.filter((tp) => trilhaCompleta(progresso, tp.slug)).map((tp) => tp.slug);
   const totalSelos = ganhos.length;
 
   // Detecta selos conquistados desde a última visita para tocar o efeito de estouro.
@@ -248,33 +251,32 @@ function TrilhasHub() {
         <div className="absolute left-1/2 top-0 h-px w-[min(72rem,calc(100%-3rem))] -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
         <div className="relative mx-auto max-w-5xl px-6 py-20 text-center sm:py-28">
           <p className="mb-6 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-gold-soft sm:text-xs">
-            <Compass size={14} /> Trilhas de Aprendizagem · Cuiabá
+            <Compass size={14} /> {t("faith.eyebrowHub")}
           </p>
           <h1 className="mx-auto max-w-3xl font-serif text-4xl leading-[1.08] sm:text-6xl md:text-7xl">
-            Conquiste os <em className="text-accent not-italic">selos</em> da fé de Cuiabá.
+            {t("faith.hubTitlePrefix")} <em className="text-accent not-italic">{t("faith.hubTitleEmphasis")}</em> {t("faith.hubTitleSuffix")}
           </h1>
           <p className="mx-auto mt-8 max-w-2xl text-base leading-7 text-background/80 sm:text-lg">
-            Três fases, três templos, três medalhas. Complete uma trilha para forjar seu selo e
-            desbloquear a próxima fase da jornada.
+            {t("faith.hubIntro")}
           </p>
 
           {/* Passaporte de selos */}
           <div className="mx-auto mt-12 max-w-xl rounded-3xl border border-background/15 bg-background/5 p-6 backdrop-blur sm:p-8">
             <p className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.25em] text-gold-soft">
-              <Trophy size={14} className="text-gold" /> Passaporte S.E.N.A.C · {totalSelos}/3
+              <Trophy size={14} className="text-gold" /> {t("faith.passport")} · {totalSelos}/3
             </p>
 
             <div className="mt-6 flex items-start justify-center">
-              {TEMPLOS.map((t, i) => {
-                const ganho = trilhaCompleta(progresso, t.slug);
+              {templos.map((tp, i) => {
+                const ganho = trilhaCompleta(progresso, tp.slug);
                 return (
-                  <Fragment key={t.slug}>
+                  <Fragment key={tp.slug}>
                     <div className="flex w-[33%] max-w-[150px] flex-col items-center gap-3 text-center">
                       <SeloMedalhao
-                        slug={t.slug}
+                        slug={tp.slug}
                         ganho={ganho}
                         size={84}
-                        animar={recem.includes(t.slug)}
+                        animar={recem.includes(tp.slug)}
                       />
                       <span className="flex flex-col gap-0.5">
                         <span
@@ -282,16 +284,16 @@ function TrilhasHub() {
                             ganho ? "text-gold" : "text-background/45"
                           }`}
                         >
-                          {ganho ? t.trilha.badge.titulo : "A conquistar"}
+                          {ganho ? tp.trilha.badge.titulo : t("faith.toEarn")}
                         </span>
                         <span className="text-[9px] uppercase tracking-[0.18em] text-background/40">
-                          {t.tipo}
+                          {tp.tipo}
                         </span>
                       </span>
                     </div>
 
                     {/* Trilho que liga os selos (acende ao concluir) */}
-                    {i < TEMPLOS.length - 1 && (
+                    {i < templos.length - 1 && (
                       <span
                         aria-hidden
                         className={`mt-10 h-[3px] w-6 shrink-0 rounded-full transition-colors duration-700 sm:w-10 ${
@@ -310,13 +312,14 @@ function TrilhasHub() {
       {/* Portais das trilhas (fases sequenciais) */}
       <section className="relative z-10 overflow-hidden pb-28">
         <div className="faith-route-grid mx-auto grid max-w-7xl gap-5 px-6 md:grid-cols-3">
-          {TEMPLOS.map((t, i) => (
+          {templos.map((tp, i) => (
             <PortalTrilha
-              key={t.slug}
-              templo={t}
+              key={tp.slug}
+              templo={tp}
               index={i}
               progresso={progresso}
               destravada={liberada(progresso, i)}
+              anteriorNome={i > 0 ? templos[i - 1].nome : null}
             />
           ))}
         </div>
@@ -332,18 +335,20 @@ function PortalTrilha({
   index,
   progresso,
   destravada,
+  anteriorNome,
 }: {
   templo: Templo;
   index: number;
   progresso: Record<string, string[]>;
   destravada: boolean;
+  anteriorNome: string | null;
 }) {
+  const { t: tr } = useI18n();
   const total = t.trilha.passos.length;
   const feitos = contarConcluidos(progresso, t.slug);
   const pct = percentual(progresso, t.slug);
   const completa = trilhaCompleta(progresso, t.slug);
   const iniciada = feitos > 0;
-  const anterior = index > 0 ? TEMPLOS[index - 1] : null;
 
   const corpo = (
     <div className="faith-route-card-body relative p-7 sm:p-8">
@@ -369,11 +374,11 @@ function PortalTrilha({
         </div>
 
         <p className="mt-6 flex min-h-8 items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/60">
-          <Clock size={12} className="text-gold" /> Fase {index + 1} · {t.tipo}
+          <Clock size={12} className="text-gold" /> {tr("faith.phase")} {index + 1} · {t.tipo}
         </p>
         <h2 className="faith-route-title mt-2 font-serif text-2xl leading-tight text-white">{t.nome}</h2>
         <p className={`faith-route-focus mt-2 text-sm font-medium uppercase tracking-wide ${t.tema.realce}`}>
-          Foco: {t.trilha.foco}
+          {tr("faith.focus")}: {t.trilha.foco}
         </p>
       </div>
 
@@ -382,9 +387,9 @@ function PortalTrilha({
           {/* Barra de progresso */}
           <div className="mt-8">
             <div className="flex items-center justify-between text-[11px] uppercase tracking-widest text-white/70">
-              <span>{pct}% concluído</span>
+              <span>{pct}% {tr("faith.percentDone")}</span>
               <span>
-                {feitos}/{total} módulos
+                {feitos}/{total} {tr("faith.modules")}
               </span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
@@ -398,15 +403,15 @@ function PortalTrilha({
           <span className="mt-7 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-xs font-semibold uppercase tracking-widest text-white transition group-hover:bg-white/15">
             {completa ? (
               <>
-                <CheckCircle2 size={15} className="text-gold" /> Revisar fase
+                <CheckCircle2 size={15} className="text-gold" /> {tr("faith.reviewPhase")}
               </>
             ) : iniciada ? (
               <>
-                <PlayCircle size={15} /> Continuar fase
+                <PlayCircle size={15} /> {tr("faith.continuePhase")}
               </>
             ) : (
               <>
-                <Sparkles size={15} className="text-gold" /> Iniciar fase
+                <Sparkles size={15} className="text-gold" /> {tr("faith.startPhase")}
               </>
             )}
             <ArrowRight size={14} className="transition group-hover:translate-x-1" />
@@ -416,7 +421,7 @@ function PortalTrilha({
         <div className="relative z-10 mt-8">
           <div className="flex min-h-16 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs text-white/60">
             <Lock size={14} className="text-white/40" />
-            <span className="faith-route-lock-text">Conclua a fase “{anterior?.nome}” para desbloquear.</span>
+            <span className="faith-route-lock-text">{tr("faith.lockedPhasePrefix")} “{anteriorNome}” {tr("faith.lockedPhaseSuffix")}</span>
           </div>
         </div>
       )}
