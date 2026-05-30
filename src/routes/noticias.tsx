@@ -4,6 +4,9 @@ import { Newspaper } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { listNoticias, type Noticia } from "@/lib/noticias";
+import { useI18n, type Language } from "@/lib/i18n";
+
+const DATE_LOCALE: Record<Language, string> = { pt: "pt-BR", en: "en-US", es: "es-ES" };
 
 export const Route = createFileRoute("/noticias")({
   head: () => ({
@@ -17,16 +20,17 @@ export const Route = createFileRoute("/noticias")({
   component: NoticiasPage,
 });
 
-function formatDate(d: string | null) {
+function formatDate(d: string | null, locale: string) {
   if (!d) return "";
   try {
-    return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric" }).format(new Date(d));
+    return new Intl.DateTimeFormat(locale, { day: "2-digit", month: "long", year: "numeric" }).format(new Date(d));
   } catch {
     return "";
   }
 }
 
 function NoticiasPage() {
+  const { t, language } = useI18n();
   const { data, isLoading, error } = useQuery({
     queryKey: ["noticias", "publicas"],
     queryFn: () => listNoticias({ onlyPublicadas: true }),
@@ -37,16 +41,14 @@ function NoticiasPage() {
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-6 py-16">
         <header className="mb-12 max-w-2xl">
-          <p className="text-xs uppercase tracking-[0.3em] text-accent">Senac MT</p>
-          <h1 className="mt-3 font-serif text-4xl text-foreground md:text-5xl">Notícias</h1>
-          <p className="mt-4 text-muted-foreground">
-            Atualizações, bastidores e novidades do projeto Sagrado Digital.
-          </p>
+          <p className="text-xs uppercase tracking-[0.3em] text-accent">{t("news.eyebrow")}</p>
+          <h1 className="mt-3 font-serif text-4xl text-foreground md:text-5xl">{t("news.title")}</h1>
+          <p className="mt-4 text-muted-foreground">{t("news.intro")}</p>
         </header>
 
-        {isLoading && <p className="text-sm text-muted-foreground">Carregando notícias…</p>}
+        {isLoading && <p className="text-sm text-muted-foreground">{t("news.loading")}</p>}
         {error && (
-          <p className="text-sm text-destructive">Não foi possível carregar as notícias agora. Tente novamente em instantes.</p>
+          <p className="text-sm text-destructive">{t("news.error")}</p>
         )}
 
         {!isLoading && !error && (data?.length ?? 0) === 0 && (
@@ -56,7 +58,7 @@ function NoticiasPage() {
         {!isLoading && !error && (data?.length ?? 0) > 0 && (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {data!.map((n) => (
-              <NoticiaCard key={n.id} noticia={n} />
+              <NoticiaCard key={n.id} noticia={n} locale={DATE_LOCALE[language]} />
             ))}
           </div>
         )}
@@ -66,8 +68,8 @@ function NoticiasPage() {
   );
 }
 
-function NoticiaCard({ noticia }: { noticia: Noticia }) {
-  const date = formatDate(noticia.publicado_em ?? noticia.created_at);
+function NoticiaCard({ noticia, locale }: { noticia: Noticia; locale: string }) {
+  const date = formatDate(noticia.publicado_em ?? noticia.created_at, locale);
   return (
     <article className="group flex flex-col overflow-hidden rounded-sm border border-border/60 bg-card transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md">
       <div className="aspect-[16/10] overflow-hidden bg-muted">
@@ -94,20 +96,19 @@ function NoticiaCard({ noticia }: { noticia: Noticia }) {
 }
 
 function EmptyState() {
+  const { t } = useI18n();
   return (
     <div className="flex flex-col items-center justify-center rounded-sm border border-dashed border-border/70 bg-card/50 px-6 py-20 text-center">
       <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-accent">
         <Newspaper size={26} />
       </div>
-      <h2 className="mt-5 font-serif text-2xl text-foreground">Em breve, novidades</h2>
-      <p className="mt-2 max-w-md text-sm text-muted-foreground">
-        Ainda não publicamos notícias por aqui. Volte em breve — ou explore o acervo de igrejas enquanto isso.
-      </p>
+      <h2 className="mt-5 font-serif text-2xl text-foreground">{t("news.emptyTitle")}</h2>
+      <p className="mt-2 max-w-md text-sm text-muted-foreground">{t("news.emptyText")}</p>
       <Link
         to="/igrejas"
         className="mt-6 inline-flex items-center rounded-sm bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition hover:-translate-y-0.5 hover:opacity-90"
       >
-        Explorar acervo
+        {t("news.exploreCollection")}
       </Link>
     </div>
   );

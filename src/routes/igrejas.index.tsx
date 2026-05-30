@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { listIgrejas } from "@/lib/igrejas";
 import { hasSupabaseConfig, supabase } from "@/integrations/supabase/client";
 import { ArrowRight, MapPin, Compass } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/igrejas/")({
   head: () => ({
@@ -35,6 +36,7 @@ async function listIgrejasWithTour(): Promise<Set<string>> {
 }
 
 function Acervo() {
+  const { t } = useI18n();
   const { data: igrejas = [], isLoading } = useQuery({
     queryKey: ["igrejas"],
     queryFn: listIgrejas,
@@ -69,14 +71,14 @@ function Acervo() {
       <SiteHeader />
       <section className="border-b border-border">
         <div className="mx-auto max-w-7xl px-6 py-24">
-          <p className="text-xs uppercase tracking-[0.3em] text-gold">Acervo</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-gold">{t("churches.eyebrow")}</p>
           <h1 className="mt-6 max-w-3xl font-serif text-5xl md:text-7xl">
-            O patrimônio religioso brasileiro, ao alcance de um clique.
+            {t("churches.title")}
           </h1>
           <p className="mt-8 max-w-2xl text-lg text-muted-foreground">
             {isLoading
-              ? "Carregando acervo…"
-              : `${filtered.length} ${filtered.length === 1 ? "santuário" : "santuários"} · Tours 360° imersivos.`}
+              ? t("churches.loading")
+              : `${filtered.length} ${filtered.length === 1 ? t("churches.unit") : t("churches.unitPlural")} · ${t("churches.countSuffix")}`}
           </p>
 
           {/* Filtros */}
@@ -85,9 +87,10 @@ function Acervo() {
               <select
                 value={estado}
                 onChange={(e) => setEstado(e.target.value)}
+                aria-label={t("churches.allStates")}
                 className="border border-border bg-background px-4 py-2 text-sm focus:border-gold focus:outline-none"
               >
-                <option value="">Todos os estados</option>
+                <option value="">{t("churches.allStates")}</option>
                 {estados.map((e) => (
                   <option key={e} value={e}>{e}</option>
                 ))}
@@ -95,19 +98,21 @@ function Acervo() {
               <select
                 value={estilo}
                 onChange={(e) => setEstilo(e.target.value)}
+                aria-label={t("churches.allStyles")}
                 className="border border-border bg-background px-4 py-2 text-sm focus:border-gold focus:outline-none"
               >
-                <option value="">Todos os estilos</option>
+                <option value="">{t("churches.allStyles")}</option>
                 {estilos.map((e) => (
                   <option key={e} value={e}>{e}</option>
                 ))}
               </select>
               {(estado || estilo) && (
                 <button
+                  type="button"
                   onClick={() => { setEstado(""); setEstilo(""); }}
                   className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground"
                 >
-                  Limpar filtros
+                  {t("churches.clearFilters")}
                 </button>
               )}
             </div>
@@ -119,10 +124,8 @@ function Acervo() {
         <div className="mx-auto max-w-7xl px-6 py-16">
           {!isLoading && filtered.length === 0 ? (
             <div className="border border-dashed border-border p-16 text-center">
-              <p className="font-serif text-2xl">Nenhum santuário encontrado.</p>
-              <p className="mt-3 text-sm text-muted-foreground">
-                Ajuste os filtros ou volte em breve para novos templos.
-              </p>
+              <p className="font-serif text-2xl">{t("churches.emptyTitle")}</p>
+              <p className="mt-3 text-sm text-muted-foreground">{t("churches.emptyText")}</p>
             </div>
           ) : (
             <div className="grid gap-px bg-border md:grid-cols-2 lg:grid-cols-3">
@@ -156,7 +159,7 @@ function Acervo() {
                       </div>
                       {hasTour && (
                         <div className="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-gold/95 px-3 py-1 text-[10px] uppercase tracking-widest text-ink shadow">
-                          <Compass size={11} /> Tour 3D
+                          <Compass size={11} /> {t("churches.tour3d")}
                         </div>
                       )}
                     </Link>
@@ -175,14 +178,14 @@ function Acervo() {
                           hash="tour"
                           className="inline-flex items-center gap-2 bg-gold px-4 py-2 text-[10px] uppercase tracking-widest text-ink transition hover:bg-gold-soft"
                         >
-                          <Compass size={12} /> Abrir tour 360°
+                          <Compass size={12} /> {t("churches.openTour")}
                         </Link>
                         <Link
                           to="/igrejas/$slug"
                           params={{ slug: i.slug }}
                           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
                         >
-                          Detalhes <ArrowRight size={12} />
+                          {t("churches.details")} <ArrowRight size={12} />
                         </Link>
                       </div>
                     </div>

@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { listIgrejas, type Igreja } from "@/lib/igrejas";
 import { Compass, MapPin, ArrowLeft } from "lucide-react";
 import { trackTourEvent } from "@/lib/tracking";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/tours")({
   head: () => ({
@@ -48,6 +49,7 @@ function expandirTours(igrejas: Igreja[]): TourItem[] {
 }
 
 function ToursPage() {
+  const { t } = useI18n();
   const { data: igrejas = [], isLoading } = useQuery({
     queryKey: ["igrejas"],
     queryFn: listIgrejas,
@@ -76,20 +78,16 @@ function ToursPage() {
             to="/"
             className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-background/70 hover:text-gold"
           >
-            <ArrowLeft size={12} /> Início
+            <ArrowLeft size={12} /> {t("common.goHome")}
           </Link>
           <p className="mt-6 flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-gold">
-            <Compass size={12} /> Imersão Matterport
+            <Compass size={12} /> {t("home.matterport")}
           </p>
-          <h1 className="mt-4 font-serif text-5xl md:text-6xl">Explorar Tours 360°</h1>
-          <p className="mt-4 max-w-2xl text-base text-background/80">
-            Navegue por dentro dos santuários do acervo. Cada tour é um gêmeo digital
-            tridimensional captado in loco — explore detalhes, altares e vitrais como
-            se estivesse lá.
-          </p>
+          <h1 className="mt-4 font-serif text-5xl md:text-6xl">{t("tours.title")}</h1>
+          <p className="mt-4 max-w-2xl text-base text-background/80">{t("tours.intro")}</p>
           {tours.length > 0 && (
             <p className="mt-4 text-xs uppercase tracking-widest text-background/60">
-              {tours.length} {tours.length === 1 ? "tour disponível" : "tours disponíveis"}
+              {tours.length} {tours.length === 1 ? t("tours.available") : t("tours.availablePlural")}
             </p>
           )}
         </div>
@@ -97,29 +95,27 @@ function ToursPage() {
 
       <div className="mx-auto max-w-7xl px-6 py-16">
         {isLoading && (
-          <p className="py-20 text-center text-sm text-muted-foreground">Carregando tours…</p>
+          <p className="py-20 text-center text-sm text-muted-foreground">{t("tours.loading")}</p>
         )}
 
         {!isLoading && tours.length === 0 && (
           <div className="border border-dashed border-border p-16 text-center">
             <Compass size={36} className="mx-auto text-muted-foreground" strokeWidth={1.2} />
-            <p className="mt-6 font-serif text-2xl">Nenhum tour disponível ainda</p>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Os tours 360° serão publicados em breve. Volte logo!
-            </p>
+            <p className="mt-6 font-serif text-2xl">{t("tours.emptyTitle")}</p>
+            <p className="mt-3 text-sm text-muted-foreground">{t("tours.emptyText")}</p>
             <Link
               to="/igrejas"
               className="mt-8 inline-flex items-center gap-2 border border-foreground px-6 py-3 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background"
             >
-              Ver acervo de igrejas
+              {t("tours.seeCollection")}
             </Link>
           </div>
         )}
 
         {tours.length > 0 && (
           <div className="space-y-20">
-            {tours.map((t) => (
-              <TourCard key={t.id} tour={t} />
+            {tours.map((item) => (
+              <TourCard key={item.id} tour={item} />
             ))}
           </div>
         )}
@@ -131,6 +127,7 @@ function ToursPage() {
 }
 
 function TourCard({ tour }: { tour: TourItem }) {
+  const { t } = useI18n();
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   return (
@@ -144,7 +141,7 @@ function TourCard({ tour }: { tour: TourItem }) {
             <MapPin size={12} /> {tour.igreja.cidade}, {tour.igreja.estado}
             {tour.totalNaIgreja > 1 && (
               <span className="text-muted-foreground">
-                · Tour {tour.index + 1} de {tour.totalNaIgreja}
+                · {t("tours.tour")} {tour.index + 1} {t("tours.of")} {tour.totalNaIgreja}
               </span>
             )}
           </p>
@@ -158,7 +155,7 @@ function TourCard({ tour }: { tour: TourItem }) {
           params={{ slug: tour.igreja.slug }}
           className="inline-flex items-center gap-2 border border-foreground px-4 py-2 text-[10px] uppercase tracking-widest hover:bg-foreground hover:text-background"
         >
-          Página da igreja
+          {t("tours.churchPage")}
         </Link>
       </header>
 
