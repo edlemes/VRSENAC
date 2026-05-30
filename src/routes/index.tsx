@@ -8,7 +8,7 @@ import candles from "@/assets/candles.jpg";
 import mesquitaEntradaVitrais from "@/assets/mesquita-entrada-vitrais.jpg";
 import mesquitaFachadaMinarete from "@/assets/mesquita-fachada-minarete.jpg";
 import mesquitaSalaOracao from "@/assets/mesquita-sala-oracao.jpg";
-import { ArrowRight, Scan, Heart, Landmark, Flame, Users, Sparkles } from "lucide-react";
+import { ArrowRight, Scan, Heart, Landmark, Flame, Users, Sparkles, Accessibility, HandHeart, MapPinCheck, MousePointerClick, Cpu } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
@@ -550,16 +550,21 @@ function Home() {
             <p className="mt-6 max-w-xl text-background/80">
               {t("home.devotionText")}
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-6 text-sm">
-              <span className="flex items-center gap-2 text-background/70">
-                <Flame size={18} className="text-gold" /> {t("home.instantPix")}
-              </span>
-              <span className="flex items-center gap-2 text-background/70">
-                <Heart size={18} className="text-gold" /> {t("home.parishShare")}
-              </span>
-              <span className="flex items-center gap-2 text-background/70">
-                <Sparkles size={18} className="text-gold" /> {t("home.customIntention")}
-              </span>
+            <div className="mt-10 flex flex-wrap items-center gap-5 text-sm">
+              {tr<string[]>("home.devotionBenefits", [
+                t("home.instantPix"),
+                t("home.parishShare"),
+                t("home.customIntention"),
+              ]).map((benefit, index) => {
+                const icons = [Accessibility, HandHeart, MapPinCheck, MousePointerClick, Cpu];
+                const Icon = icons[index] ?? Sparkles;
+
+                return (
+                  <span key={benefit} className="flex items-center gap-2 text-background/70">
+                    <Icon size={18} className="text-gold" /> {benefit}
+                  </span>
+                );
+              })}
             </div>
           </div>
         </div>
