@@ -8,7 +8,7 @@ import candles from "@/assets/candles.jpg";
 import mesquitaEntradaVitrais from "@/assets/mesquita-entrada-vitrais.jpg";
 import mesquitaFachadaMinarete from "@/assets/mesquita-fachada-minarete.jpg";
 import mesquitaSalaOracao from "@/assets/mesquita-sala-oracao.jpg";
-import { Scan, Heart, Landmark, Flame, Users, Sparkles, Accessibility, HandHeart, MapPinCheck, MousePointerClick, Cpu } from "lucide-react";
+import { Scan, Heart, Landmark, Flame, Users, Sparkles, Accessibility, HandHeart, MapPinCheck, MousePointerClick, Cpu, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
@@ -377,6 +377,15 @@ function Home() {
           <p className="mt-6 max-w-2xl text-base leading-7 text-background/80 sm:mt-8 sm:text-lg">
             {t("home.heroText")}
           </p>
+          <div className="mt-10">
+            <Link
+              to="/tours"
+              className="group inline-flex min-h-12 items-center gap-3 bg-accent px-6 text-sm font-semibold uppercase tracking-widest text-accent-foreground shadow-lg transition hover:-translate-y-0.5 hover:bg-gold-soft sm:px-8"
+            >
+              Explorar Tours
+              <ArrowRight size={16} className="transition group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -594,7 +603,7 @@ function Home() {
             <p className="mt-6 max-w-xl text-background/80">
               {t("home.devotionText")}
             </p>
-            <div className="mt-10 grid max-w-xl gap-3 text-sm">
+            <div className="mt-10 grid max-w-2xl gap-x-8 gap-y-5 text-sm sm:grid-cols-2">
               {tr<string[]>("home.devotionBenefits", [
                 t("home.instantPix"),
                 t("home.parishShare"),
@@ -604,11 +613,8 @@ function Home() {
                 const Icon = icons[index] ?? Sparkles;
 
                 return (
-                  <span
-                    key={benefit}
-                    className="flex min-h-12 items-center gap-3 border border-background/10 bg-background/5 px-4 py-3 text-background/78 backdrop-blur-sm"
-                  >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-gold/35 bg-gold/10 text-gold">
+                  <span key={benefit} className="flex min-h-12 items-center gap-3 text-background/85">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold/15 text-gold">
                       <Icon size={18} strokeWidth={1.6} />
                     </span>
                     <span className="leading-6">{benefit}</span>
