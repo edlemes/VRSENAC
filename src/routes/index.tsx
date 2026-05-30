@@ -8,7 +8,7 @@ import candles from "@/assets/candles.jpg";
 import mesquitaEntradaVitrais from "@/assets/mesquita-entrada-vitrais.jpg";
 import mesquitaFachadaMinarete from "@/assets/mesquita-fachada-minarete.jpg";
 import mesquitaSalaOracao from "@/assets/mesquita-sala-oracao.jpg";
-import { ArrowRight, Scan, Heart, Landmark, Flame, Users, Sparkles, Accessibility, HandHeart, MapPinCheck, MousePointerClick, Cpu } from "lucide-react";
+import { Scan, Heart, Landmark, Flame, Users, Sparkles, Accessibility, HandHeart, MapPinCheck, MousePointerClick, Cpu } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
@@ -377,21 +377,6 @@ function Home() {
           <p className="mt-6 max-w-2xl text-base leading-7 text-background/80 sm:mt-8 sm:text-lg">
             {t("home.heroText")}
           </p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link
-              to="/igrejas"
-              className="group inline-flex min-h-12 items-center gap-3 bg-accent px-5 text-sm font-medium uppercase tracking-widest text-accent-foreground transition hover:opacity-90 sm:px-7"
-            >
-              {t("home.exploreCollection")}
-              <ArrowRight size={16} className="transition group-hover:translate-x-1" />
-            </Link>
-            <Link
-              to="/parceria"
-              className="inline-flex min-h-12 items-center gap-3 border border-background/30 px-5 text-sm font-medium uppercase tracking-widest text-background transition hover:bg-background/10 sm:px-7"
-            >
-              {t("home.churchProject")}
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -404,7 +389,7 @@ function Home() {
         <svg
           aria-hidden="true"
           viewBox="0 0 1200 760"
-          className="pointer-events-none absolute right-[-8rem] top-24 hidden h-[48rem] w-[72rem] text-[#005ca8] opacity-[0.16] lg:block"
+          className="pointer-events-none absolute right-[-8rem] top-0 hidden h-[48rem] w-[72rem] text-[#005ca8] opacity-[0.16] lg:block"
           fill="none"
         >
           <path d="M196 612H984" stroke="currentColor" strokeWidth="1" />
@@ -430,9 +415,68 @@ function Home() {
           <path d="M188 250C312 178 430 144 590 144C750 144 876 178 998 250" stroke="currentColor" strokeDasharray="2 16" strokeWidth="1" />
           <path d="M168 526C322 466 454 438 590 438C726 438 868 466 1016 526" stroke="currentColor" strokeDasharray="2 18" strokeWidth="1" />
         </svg>
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 1200 760"
+          className="pointer-events-none absolute left-[-16rem] top-[34rem] hidden h-[48rem] w-[72rem] text-[#0f8a78] opacity-[0.12] lg:block"
+          fill="none"
+        >
+          <path d="M180 620H1040" stroke="currentColor" strokeWidth="1" />
+          <path d="M360 620V444C360 360 428 292 512 292C596 292 664 360 664 444V620" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M404 620V456C404 396 452 348 512 348C572 348 620 396 620 456V620" stroke="currentColor" strokeWidth="1" />
+          <path d="M318 452H706" stroke="currentColor" strokeDasharray="4 12" strokeWidth="1" />
+          <path d="M292 620V388H732V620" stroke="currentColor" strokeWidth="1" />
+          <path d="M804 620V176C804 134 838 100 880 100C922 100 956 134 956 176V620" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M840 620V196C840 174 858 156 880 156C902 156 920 174 920 196V620" stroke="currentColor" strokeWidth="1" />
+          <path d="M790 236H970" stroke="currentColor" strokeWidth="1" />
+          <path d="M804 176H956" stroke="currentColor" strokeWidth="1" />
+          <path d="M880 100V54" stroke="currentColor" strokeWidth="1" />
+          <path d="M880 54C908 62 924 84 924 110C900 101 886 84 880 54Z" stroke="currentColor" strokeWidth="1" />
+          <path d="M452 620V500H572V620" stroke="currentColor" strokeWidth="1" />
+          <path d="M486 500V620" stroke="currentColor" strokeDasharray="5 12" strokeWidth="1" />
+          <path d="M538 500V620" stroke="currentColor" strokeDasharray="5 12" strokeWidth="1" />
+          <circle cx="880" cy="282" r="7" stroke="currentColor" strokeWidth="1.2" />
+          <circle cx="880" cy="364" r="7" stroke="currentColor" strokeWidth="1.2" />
+          <circle cx="880" cy="446" r="7" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M238 396C352 246 510 190 684 250C780 283 846 340 1004 312" stroke="currentColor" strokeDasharray="2 18" strokeWidth="1" />
+          <path d="M246 536C392 488 558 470 746 494C854 508 936 532 1030 508" stroke="currentColor" strokeDasharray="2 16" strokeWidth="1" />
+        </svg>
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 1200 760"
+          className="pointer-events-none absolute right-[-12rem] top-[62rem] hidden h-[48rem] w-[72rem] text-[#b46b21] opacity-[0.115] lg:block"
+          fill="none"
+        >
+          <path d="M156 626H1044" stroke="currentColor" strokeWidth="1" />
+          <path d="M244 626V448C244 292 398 166 588 166C778 166 932 292 932 448V626" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M302 626V462C302 338 430 238 588 238C746 238 874 338 874 462V626" stroke="currentColor" strokeWidth="1" />
+          <path d="M344 450H832" stroke="currentColor" strokeWidth="1" />
+          <path d="M344 520H832" stroke="currentColor" strokeDasharray="6 14" strokeWidth="1" />
+          <path d="M384 626V472H792V626" stroke="currentColor" strokeWidth="1" />
+          <path d="M444 626V472" stroke="currentColor" strokeWidth="1" />
+          <path d="M504 626V472" stroke="currentColor" strokeWidth="1" />
+          <path d="M564 626V472" stroke="currentColor" strokeWidth="1" />
+          <path d="M624 626V472" stroke="currentColor" strokeWidth="1" />
+          <path d="M684 626V472" stroke="currentColor" strokeWidth="1" />
+          <path d="M744 626V472" stroke="currentColor" strokeWidth="1" />
+          <path d="M588 238V96" stroke="currentColor" strokeWidth="1" />
+          <path d="M552 116H624" stroke="currentColor" strokeWidth="1" />
+          <path d="M564 88H612" stroke="currentColor" strokeWidth="1" />
+          <path d="M588 68V48" stroke="currentColor" strokeWidth="1" />
+          <circle cx="588" cy="334" r="96" stroke="currentColor" strokeWidth="1" />
+          <path d="M492 334H684" stroke="currentColor" strokeWidth="1" />
+          <path d="M588 238V430" stroke="currentColor" strokeDasharray="5 13" strokeWidth="1" />
+          <path d="M206 452C312 336 448 278 588 278C728 278 864 336 970 452" stroke="currentColor" strokeDasharray="2 16" strokeWidth="1" />
+          <path d="M210 574C342 534 468 516 588 516C708 516 834 534 970 574" stroke="currentColor" strokeDasharray="2 18" strokeWidth="1" />
+          <circle cx="384" cy="450" r="5" stroke="currentColor" strokeWidth="1" />
+          <circle cx="792" cy="450" r="5" stroke="currentColor" strokeWidth="1" />
+          <circle cx="588" cy="238" r="6" stroke="currentColor" strokeWidth="1.2" />
+        </svg>
         <div className="pointer-events-none absolute right-[8%] top-28 hidden h-px w-72 rotate-[-18deg] bg-gradient-to-r from-transparent via-gold/35 to-transparent lg:block" />
         <div className="pointer-events-none absolute right-[20%] top-40 hidden h-2 w-2 animate-pulse rounded-full bg-gold/70 shadow-[0_0_24px_rgba(255,126,0,0.38)] lg:block" />
         <div className="pointer-events-none absolute right-[36%] top-[23rem] hidden h-2 w-2 animate-pulse rounded-full bg-[#005ca8]/50 shadow-[0_0_22px_rgba(0,80,160,0.30)] lg:block" />
+        <div className="pointer-events-none absolute left-[18%] top-[43rem] hidden h-px w-64 rotate-[16deg] bg-gradient-to-r from-transparent via-[#0f8a78]/25 to-transparent lg:block" />
+        <div className="pointer-events-none absolute right-[16%] top-[73rem] hidden h-px w-72 rotate-[-12deg] bg-gradient-to-r from-transparent via-gold/25 to-transparent lg:block" />
 
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-6 py-24">
@@ -550,7 +594,7 @@ function Home() {
             <p className="mt-6 max-w-xl text-background/80">
               {t("home.devotionText")}
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-5 text-sm">
+            <div className="mt-10 grid max-w-xl gap-3 text-sm">
               {tr<string[]>("home.devotionBenefits", [
                 t("home.instantPix"),
                 t("home.parishShare"),
@@ -560,8 +604,14 @@ function Home() {
                 const Icon = icons[index] ?? Sparkles;
 
                 return (
-                  <span key={benefit} className="flex items-center gap-2 text-background/70">
-                    <Icon size={18} className="text-gold" /> {benefit}
+                  <span
+                    key={benefit}
+                    className="flex min-h-12 items-center gap-3 border border-background/10 bg-background/5 px-4 py-3 text-background/78 backdrop-blur-sm"
+                  >
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-gold/35 bg-gold/10 text-gold">
+                      <Icon size={18} strokeWidth={1.6} />
+                    </span>
+                    <span className="leading-6">{benefit}</span>
                   </span>
                 );
               })}
