@@ -72,6 +72,91 @@ function GrandeTemploVectorIcon({ size = 24 }: { size?: number }) {
   );
 }
 
+type TempleWatermarkKind = "catolico" | "islamico" | "evangelico";
+
+function TempleArchitectureWatermark({
+  kind,
+  className = "",
+}: {
+  kind: TempleWatermarkKind;
+  className?: string;
+}) {
+  const paths = {
+    catolico: (
+      <>
+        <path d="M76 430V166L240 42L404 166V430" />
+        <path d="M128 430V212C128 164 176 126 240 126C304 126 352 164 352 212V430" />
+        <path d="M42 430V194L98 142L154 194V430" />
+        <path d="M326 430V194L382 142L438 194V430" />
+        <path d="M240 42V8M218 24H262" />
+        <path d="M98 142V64M82 84H114" />
+        <path d="M382 142V64M366 84H398" />
+        <path d="M188 430V272C188 244 210 220 240 220C270 220 292 244 292 272V430" />
+        <path d="M76 166H404M128 212H352M42 194H154M326 194H438" />
+        <path d="M240 126V430" strokeDasharray="10 18" />
+        <path d="M178 102C214 72 266 72 302 102" />
+      </>
+    ),
+    islamico: (
+      <>
+        <path d="M70 430H410" />
+        <path d="M112 430V244H330V430" />
+        <path d="M112 244C124 148 172 92 222 92C272 92 318 148 330 244" />
+        <path d="M154 244V430M288 244V430M154 318H288" />
+        <path d="M358 430V78" />
+        <path d="M330 78H386M344 46H372" />
+        <path d="M382 92C426 112 424 178 382 198" />
+        <path d="M126 244H346" />
+        <path d="M188 78C202 54 214 38 222 10C230 38 242 54 256 78" />
+      </>
+    ),
+    evangelico: (
+      <>
+        <path d="M42 430H438" />
+        <path d="M74 392H408" />
+        <path d="M82 388V244C82 138 150 76 242 76C334 76 404 138 404 244V388" />
+        <path d="M110 246C142 174 184 142 242 142C300 142 342 174 374 246" />
+        <path d="M104 388V276H380V388" />
+        <path d="M142 388V284M184 388V284M226 388V284M268 388V284M310 388V284M352 388V284" />
+        <path d="M242 430V54" />
+        <path d="M222 54H262M230 30H254" />
+        <path d="M126 430V396M184 430V396M242 430V396M300 430V396M358 430V396" />
+      </>
+    ),
+  };
+
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 480 460"
+      className={`architectural-watermark architectural-watermark-${kind} ${className}`}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="8"
+    >
+      {paths[kind]}
+    </svg>
+  );
+}
+
+function watermarkKind(slug: string): TempleWatermarkKind {
+  if (slug === "mesquita") return "islamico";
+  if (slug === "grande-templo") return "evangelico";
+  return "catolico";
+}
+
+function FaithRouteBackdrop() {
+  return (
+    <div className="faith-route-backdrop absolute inset-0 z-0" aria-hidden>
+      <TempleArchitectureWatermark kind="catolico" className="faith-route-backdrop-shape faith-route-backdrop-shape-left" />
+      <TempleArchitectureWatermark kind="islamico" className="faith-route-backdrop-shape faith-route-backdrop-shape-center" />
+      <TempleArchitectureWatermark kind="evangelico" className="faith-route-backdrop-shape faith-route-backdrop-shape-right" />
+    </div>
+  );
+}
+
 function TrilhasHub() {
   const progresso = useProgresso();
   const ganhos = TEMPLOS.filter((t) => trilhaCompleta(progresso, t.slug)).map((t) => t.slug);
@@ -97,12 +182,12 @@ function TrilhasHub() {
   }, [ganhos.join(",")]);
 
   return (
-    <div className="min-h-screen bg-ink text-background">
+    <div className="faith-route-page relative isolate min-h-screen text-background">
       <SiteHeader />
+      <FaithRouteBackdrop />
 
       {/* Hero */}
-      <section className="relative isolate overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,oklch(0.45_0.14_255)_0%,transparent_60%)]" />
+      <section className="relative z-10 isolate overflow-hidden">
         <div className="absolute left-1/2 top-0 h-px w-[min(72rem,calc(100%-3rem))] -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
         <div className="relative mx-auto max-w-5xl px-6 py-20 text-center sm:py-28">
           <p className="mb-6 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-gold-soft sm:text-xs">
@@ -166,7 +251,7 @@ function TrilhasHub() {
       </section>
 
       {/* Portais das trilhas (fases sequenciais) */}
-      <section className="relative pb-28">
+      <section className="relative z-10 overflow-hidden pb-28">
         <div className="faith-route-grid mx-auto grid max-w-7xl gap-5 px-6 md:grid-cols-3">
           {TEMPLOS.map((t, i) => (
             <PortalTrilha
@@ -205,7 +290,8 @@ function PortalTrilha({
 
   const corpo = (
     <div className="faith-route-card-body relative p-7 sm:p-8">
-      <div>
+      <TempleArchitectureWatermark kind={watermarkKind(t.slug)} className="faith-card-watermark" />
+      <div className="relative z-10">
         <div className="flex items-center justify-between">
           <span
             className={`flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 bg-white/10 ${
@@ -235,7 +321,7 @@ function PortalTrilha({
       </div>
 
       {destravada ? (
-        <div>
+        <div className="relative z-10">
           {/* Barra de progresso */}
           <div className="mt-8">
             <div className="flex items-center justify-between text-[11px] uppercase tracking-widest text-white/70">
@@ -270,7 +356,7 @@ function PortalTrilha({
           </span>
         </div>
       ) : (
-        <div className="mt-8">
+        <div className="relative z-10 mt-8">
           <div className="flex min-h-16 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs text-white/60">
             <Lock size={14} className="text-white/40" />
             <span className="faith-route-lock-text">Conclua a fase “{anterior?.nome}” para desbloquear.</span>

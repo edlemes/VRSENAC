@@ -199,8 +199,113 @@
     gap: 1rem;
   }
 
+  /* Fundo atmosférico do Roteiro da Fé */
+  .faith-route-page {
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.08), transparent 34rem),
+      radial-gradient(circle at 14% 28%, rgba(255, 126, 0, 0.1), transparent 24rem),
+      linear-gradient(180deg, var(--ink) 0%, var(--ink) 62%, #023764 100%);
+  }
+
+  .faith-route-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      linear-gradient(90deg, rgba(0, 20, 44, 0.16), transparent 36%, rgba(0, 20, 44, 0.2)),
+      radial-gradient(circle at 88% 72%, rgba(255, 126, 0, 0.08), transparent 20rem);
+  }
+
+  .faith-route-page::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.22;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+    background-size: 112px 112px;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 72%, transparent 100%);
+  }
+
+  .faith-route-backdrop {
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .architectural-watermark {
+    pointer-events: none;
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+  }
+
+  .architectural-watermark-catolico {
+    color: rgba(178, 205, 232, 1);
+  }
+
+  .architectural-watermark-islamico {
+    color: rgba(157, 196, 176, 1);
+  }
+
+  .architectural-watermark-evangelico {
+    color: rgba(211, 178, 128, 1);
+  }
+
+  .faith-route-backdrop-shape {
+    position: absolute;
+    width: min(58rem, 72vw);
+    height: auto;
+    opacity: 0.035;
+    stroke-width: 6;
+    filter: blur(0.15px);
+  }
+
+  .faith-route-backdrop-shape-left {
+    left: -18rem;
+    top: 7rem;
+    transform: rotate(-5deg) scale(1.08);
+  }
+
+  .faith-route-backdrop-shape-center {
+    left: 50%;
+    top: 2rem;
+    transform: translateX(-50%) scale(1.2);
+    opacity: 0.028;
+  }
+
+  .faith-route-backdrop-shape-right {
+    right: -18rem;
+    top: 9rem;
+    transform: rotate(4deg) scale(1.14);
+  }
+
+  .faith-card-watermark {
+    position: absolute;
+    right: -8.5rem;
+    bottom: -6rem;
+    z-index: 0;
+    width: 27rem;
+    max-width: 92%;
+    opacity: 0.055;
+    stroke-width: 7;
+  }
+
+  .faith-route-card:hover .faith-card-watermark,
+  .faith-route-card:focus-visible .faith-card-watermark {
+    opacity: 0.075;
+    transform: translate(-0.35rem, -0.25rem) scale(1.02);
+  }
+
   /* Cartões glassmorphism (Roteiro da Fé) */
   .faith-route-grid {
+    position: relative;
+    z-index: 1;
     align-items: stretch;
     grid-auto-rows: 1fr;
   }
@@ -242,6 +347,7 @@
     height: 100%;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;
     border-radius: calc(1rem - 1px);
     background: rgba(1, 25, 48, 0.2);
     -webkit-backdrop-filter: blur(18px);
