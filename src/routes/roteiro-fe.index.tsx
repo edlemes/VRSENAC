@@ -141,8 +141,65 @@ function TempleArchitectureWatermark({
   );
 }
 
+function TempleSealWatermark({
+  kind,
+  className = "",
+}: {
+  kind: TempleWatermarkKind;
+  className?: string;
+}) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 120 120"
+      className={`temple-seal-watermark temple-seal-watermark-${kind} ${className}`}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="60" cy="60" r="55" strokeWidth="3" />
+      <circle cx="60" cy="60" r="49" strokeWidth="2" strokeDasharray="1.5 4.2" />
+      <circle cx="60" cy="60" r="43" strokeWidth="1.3" />
+      <path d="M16 87C24 106 41 116 60 116C79 116 96 106 104 87" stroke="#ff7e00" strokeWidth="3" />
+
+      <g strokeWidth="2.3">
+        {kind === "catolico" && (
+          <>
+            <path d="M44 84V56Q44 38 60 31Q76 38 76 56V84" />
+            <path d="M60 31V22M55 25H65" />
+            <circle cx="60" cy="60" r="9" strokeWidth="1.8" />
+            <path d="M60 51V69M51 60H69" strokeWidth="1.6" />
+          </>
+        )}
+
+        {kind === "islamico" && (
+          <>
+            <path d="M44 86V54Q44 38 60 32Q76 38 76 54V86" />
+            <path d="M60 32Q54 24 62 17Q59 25 67 27Q61 29 60 32" strokeWidth="1.7" />
+            <path d="M36 86V57M32 57H40" />
+            <path d="M84 86V57M80 57H88" />
+          </>
+        )}
+
+        {kind === "evangelico" && (
+          <>
+            <path d="M24 86H96" />
+            <path d="M31 77H87" />
+            <path d="M32 76V61C32 47 44 38 61 38C78 38 90 47 90 61V76" />
+            <path d="M37 61C43 52 52 48 61 48C70 48 78 52 84 61" />
+            <path d="M36 76V64H84V76" />
+            <path d="M43 76V65M52 76V65M61 76V65M70 76V65M79 76V65" />
+            <path d="M66 86V31M63 31H69M64 25H68" />
+          </>
+        )}
+      </g>
+    </svg>
+  );
+}
+
 function watermarkKind(slug: string): TempleWatermarkKind {
-  if (slug === "mesquita") return "islamico";
+  if (slug === "mesquita-cuiaba") return "islamico";
   if (slug === "grande-templo") return "evangelico";
   return "catolico";
 }
@@ -290,7 +347,7 @@ function PortalTrilha({
 
   const corpo = (
     <div className="faith-route-card-body relative p-7 sm:p-8">
-      <TempleArchitectureWatermark kind={watermarkKind(t.slug)} className="faith-card-watermark" />
+      <TempleSealWatermark kind={watermarkKind(t.slug)} className="faith-card-watermark" />
       <div className="relative z-10">
         <div className="flex items-center justify-between">
           <span

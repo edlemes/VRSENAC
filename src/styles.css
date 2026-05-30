@@ -257,6 +257,14 @@
     color: rgba(211, 178, 128, 1);
   }
 
+  .temple-seal-watermark {
+    pointer-events: none;
+    color: rgba(246, 197, 82, 1);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+  }
+
   .faith-route-backdrop-shape {
     position: absolute;
     width: min(58rem, 72vw);
@@ -287,18 +295,17 @@
 
   .faith-card-watermark {
     position: absolute;
-    right: -8.5rem;
-    bottom: -6rem;
+    right: -3.25rem;
+    bottom: -2.75rem;
     z-index: 0;
-    width: 27rem;
-    max-width: 92%;
-    opacity: 0.055;
-    stroke-width: 7;
+    width: 15rem;
+    max-width: 68%;
+    opacity: 0.075;
   }
 
   .faith-route-card:hover .faith-card-watermark,
   .faith-route-card:focus-visible .faith-card-watermark {
-    opacity: 0.075;
+    opacity: 0.105;
     transform: translate(-0.35rem, -0.25rem) scale(1.02);
   }
 
