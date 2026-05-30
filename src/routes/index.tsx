@@ -52,7 +52,8 @@ const fallbackHeroSlides: HeroSlide[] = [
 ];
 
 function hasPublicSlideContent(slide: { imagem_url?: string; titulo?: string; subtitulo?: string }) {
-  return Boolean(slide.imagem_url?.trim() && (slide.titulo?.trim() || slide.subtitulo?.trim()));
+  // Título/subtítulo são opcionais: basta a imagem para o slide ser exibido.
+  return Boolean(slide.imagem_url?.trim());
 }
 
 function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
@@ -151,7 +152,7 @@ function Home() {
     .map((s) => ({
       src: s.imagem_url,
       alt: s.titulo || "Slide",
-      legenda: s.titulo ? (s.subtitulo ? `${s.titulo} · ${s.subtitulo}` : s.titulo) : undefined,
+      legenda: [s.titulo?.trim(), s.subtitulo?.trim()].filter(Boolean).join(" · ") || undefined,
     }));
 
   if (slides.length === 0) {

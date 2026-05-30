@@ -117,7 +117,6 @@ function SlideEditor({ initial, onClose, onSaved }: { initial: SlideInput | Slid
 
   const save = async () => {
     if (!form.imagem_url) { toast.error("Imagem é obrigatória."); return; }
-    if (!form.titulo.trim()) { toast.error("Informe um título para publicar o slide."); return; }
     setSaving(true);
     try {
       if (isEdit) await updateSlide((initial as Slide).id, form);
@@ -136,7 +135,7 @@ function SlideEditor({ initial, onClose, onSaved }: { initial: SlideInput | Slid
         </div>
         <div className="mt-6 space-y-5">
           <ImageUpload value={form.imagem_url} onChange={(url) => setForm({ ...form, imagem_url: url })} folder="carrossel" label="Imagem (1920×1080)" aspectRatio={16 / 9} />
-          <Field label="Título"><input value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
+          <Field label="Título (opcional)"><input value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
           <Field label="Subtítulo / legenda"><input value={form.subtitulo} onChange={(e) => setForm({ ...form, subtitulo: e.target.value })} className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
           <Field label="Link (opcional)"><input value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} placeholder="/igrejas/..." className="w-full border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
           <Field label="Ordem"><input type="number" value={form.ordem} onChange={(e) => setForm({ ...form, ordem: Number(e.target.value) || 0 })} className="w-32 border border-border bg-background p-3 text-sm focus:border-gold focus:outline-none" /></Field>
