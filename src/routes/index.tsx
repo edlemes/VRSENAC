@@ -51,6 +51,198 @@ const fallbackHeroSlides: HeroSlide[] = [
   },
 ];
 
+function SacredSymbolStrip() {
+  const symbols = [
+    {
+      label: "Manifestacao catolica",
+      icon: (
+        <>
+          <path d="M30 76V38L52 20L74 38V76" />
+          <path d="M40 76V48C40 40.9 45.4 35 52 35C58.6 35 64 40.9 64 48V76" />
+          <path d="M52 17V8" />
+          <path d="M45 14H59" />
+          <circle cx="52" cy="54" r="10.5" />
+          <path d="M52 43.5V64.5" />
+          <path d="M43 54H61" />
+        </>
+      ),
+    },
+    {
+      label: "Manifestacao islamica",
+      icon: (
+        <>
+          <path d="M25 76H79" />
+          <path d="M35 76V49C35 39.6 42.6 32 52 32C61.4 32 69 39.6 69 49V76" />
+          <path d="M42 76V56H62V76" />
+          <path d="M76 76V34" />
+          <path d="M76 34C70 30 70 23 76 19C73 25 76 29 83 29" />
+          <path d="M32 49H72" />
+          <path d="M45 26C47.5 21.5 50 19 52 13C54 19 56.5 21.5 59 26" />
+        </>
+      ),
+    },
+    {
+      label: "Manifestacao evangelica",
+      icon: (
+        <>
+          <path d="M18 76H86" />
+          <path d="M24 67H79" />
+          <path d="M25 66V53C25 41 37 32 53 32C69 32 81 41 81 53V66" />
+          <path d="M30 53C36 45 44 41 53 41C62 41 70 45 76 53" />
+          <path d="M29 66V56H76V66" />
+          <path d="M36 66V57" />
+          <path d="M45 66V57" />
+          <path d="M54 66V57" />
+          <path d="M63 66V57" />
+          <path d="M72 66V57" />
+          <path d="M58 76V28" />
+          <path d="M55 28H61" />
+          <path d="M56 23H60" />
+          <path d="M38 76V68" />
+          <path d="M50 76V68" />
+          <path d="M62 76V68" />
+          <path d="M74 76V68" />
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <section className="relative px-6 pb-4 pt-16 md:pb-6 md:pt-24">
+      <style>{`
+        .sacred-vector-line {
+          stroke-dasharray: 260;
+          stroke-dashoffset: 260;
+          animation: sacred-vector-draw 5.8s ease-in-out infinite;
+        }
+
+        .sacred-vector-ring {
+          stroke-dasharray: 18 8;
+          animation: sacred-vector-spin 18s linear infinite;
+          transform-origin: center;
+        }
+
+        .sacred-vector-mark {
+          opacity: 0.75;
+          transform: scale(0.88);
+          transform-origin: center;
+          animation: sacred-vector-pop 5.8s ease-in-out infinite;
+        }
+
+        @keyframes sacred-vector-draw {
+          0% {
+            opacity: 0.18;
+            stroke-dashoffset: 260;
+          }
+          38% {
+            opacity: 1;
+            stroke-dashoffset: 0;
+          }
+          74% {
+            opacity: 1;
+            stroke-dashoffset: 0;
+          }
+          100% {
+            opacity: 0.18;
+            stroke-dashoffset: -260;
+          }
+        }
+
+        @keyframes sacred-vector-spin {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes sacred-vector-pop {
+          0%, 24% {
+            opacity: 0;
+            transform: scale(0.72);
+          }
+          42%, 78% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(0.82);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .sacred-vector-line,
+          .sacred-vector-ring,
+          .sacred-vector-mark {
+            animation: none;
+            opacity: 1;
+            stroke-dashoffset: 0;
+            transform: none;
+          }
+        }
+      `}</style>
+      <div className="mx-auto max-w-5xl">
+        <div className="relative flex items-center justify-center gap-3 sm:gap-8 md:gap-12">
+          <div className="pointer-events-none absolute inset-x-4 top-1/2 hidden h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-[#005ca8]/16 to-transparent md:block" />
+          {symbols.map((symbol, index) => (
+            <div key={symbol.label} className="relative z-10 flex items-center gap-3 sm:gap-8 md:gap-12">
+              <div
+                className="group relative flex h-24 w-24 shrink-0 items-center justify-center rounded-full text-[#005ca8] transition duration-500 hover:-translate-y-1 hover:text-gold sm:h-32 sm:w-32"
+                aria-label={symbol.label}
+                role="img"
+                style={{ ["--symbol-delay" as string]: `${index * 0.28}s` }}
+              >
+                <span className="absolute inset-2 rounded-full bg-[radial-gradient(circle,rgba(0,92,168,0.09),transparent_68%)] opacity-70 blur-sm transition group-hover:bg-[radial-gradient(circle,rgba(255,126,0,0.13),transparent_70%)]" />
+                <svg viewBox="0 0 104 104" className="relative h-full w-full" fill="none">
+                  <circle
+                    className="sacred-vector-ring opacity-45"
+                    cx="52"
+                    cy="52"
+                    r="45"
+                    stroke={index === 0 ? "#ff7e00" : "#005ca8"}
+                    strokeWidth="1.4"
+                    style={{ animationDelay: `-${index * 4}s` }}
+                  />
+                  <circle
+                    className="sacred-vector-line opacity-70"
+                    cx="52"
+                    cy="52"
+                    r="38"
+                    stroke={index === 0 ? "#ffb04f" : "#005ca8"}
+                    strokeWidth="1.2"
+                    style={{ animationDelay: `calc(var(--symbol-delay) + 0.1s)` }}
+                  />
+                  <g
+                    className="sacred-vector-line"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.25"
+                    style={{ animationDelay: `calc(var(--symbol-delay) + 0.25s)` }}
+                  >
+                    {symbol.icon}
+                  </g>
+                  <circle
+                    className="sacred-vector-mark"
+                    cx="52"
+                    cy="52"
+                    r="2.8"
+                    fill={index === 0 ? "#ff7e00" : "#005ca8"}
+                    style={{ animationDelay: `calc(var(--symbol-delay) + 1.8s)` }}
+                  />
+                </svg>
+              </div>
+              {index < symbols.length - 1 ? (
+                <span
+                  aria-hidden="true"
+                  className="hidden h-px w-10 bg-gradient-to-r from-[#005ca8]/20 via-gold/90 to-[#005ca8]/20 sm:block md:w-14"
+                />
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function hasPublicSlideContent(slide: { imagem_url?: string; titulo?: string; subtitulo?: string }) {
   // Título/subtítulo são opcionais: basta a imagem para o slide ser exibido.
   return Boolean(slide.imagem_url?.trim());
@@ -203,35 +395,46 @@ function Home() {
         </div>
       </section>
 
-      <section className="relative isolate overflow-hidden border-b border-border bg-background">
-        <img
-          src={candles}
-          alt=""
+      <div className="relative isolate overflow-hidden border-b border-border bg-background">
+        <div className="absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.99)_0%,rgba(250,252,255,0.96)_52%,rgba(244,248,252,0.92)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(255,126,0,0.08),transparent_24%),radial-gradient(circle_at_82%_62%,rgba(255,185,92,0.13),transparent_28%)]" />
+        <div className="absolute right-[10%] top-24 h-72 w-20 rounded-[50%_50%_44%_44%] bg-[radial-gradient(ellipse_at_center,rgba(255,185,92,0.22),rgba(255,126,0,0.10)_46%,transparent_72%)] blur-2xl" />
+        <div className="absolute left-[8%] top-[42%] h-56 w-16 rounded-[50%_50%_44%_44%] bg-[radial-gradient(ellipse_at_center,rgba(255,220,150,0.18),rgba(255,126,0,0.08)_48%,transparent_76%)] blur-2xl" />
+        <div className="absolute bottom-12 right-[30%] h-64 w-16 rounded-[50%_50%_44%_44%] bg-[radial-gradient(ellipse_at_center,rgba(255,185,92,0.16),rgba(255,126,0,0.07)_50%,transparent_78%)] blur-2xl" />
+        <svg
           aria-hidden="true"
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover opacity-[0.08]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
-        <div className="absolute left-1/2 top-0 h-px w-[min(72rem,calc(100%-3rem))] -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+          viewBox="0 0 1200 760"
+          className="pointer-events-none absolute right-[-8rem] top-24 hidden h-[48rem] w-[72rem] text-[#005ca8] opacity-[0.16] lg:block"
+          fill="none"
+        >
+          <path d="M196 612H984" stroke="currentColor" strokeWidth="1" />
+          <path d="M286 612V330L590 156L894 330V612" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M340 612V366L590 222L840 366V612" stroke="currentColor" strokeWidth="1" />
+          <path d="M236 612V292L306 244L376 292V612" stroke="currentColor" strokeWidth="1" />
+          <path d="M804 612V292L874 244L944 292V612" stroke="currentColor" strokeWidth="1" />
+          <path d="M306 244V118" stroke="currentColor" strokeWidth="1" />
+          <path d="M874 244V118" stroke="currentColor" strokeWidth="1" />
+          <path d="M590 222V86" stroke="currentColor" strokeWidth="1" />
+          <path d="M548 612V452C548 424 566 398 590 386C614 398 632 424 632 452V612" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M428 612V442C428 416 445 391 468 380C491 391 508 416 508 442V612" stroke="currentColor" strokeWidth="1" />
+          <path d="M672 612V442C672 416 689 391 712 380C735 391 752 416 752 442V612" stroke="currentColor" strokeWidth="1" />
+          <path d="M590 156L590 612" stroke="currentColor" strokeDasharray="6 14" strokeWidth="1" />
+          <path d="M286 330H894" stroke="currentColor" strokeDasharray="4 12" strokeWidth="1" />
+          <path d="M340 366H840" stroke="currentColor" strokeDasharray="4 12" strokeWidth="1" />
+          <circle cx="590" cy="156" r="7" stroke="currentColor" strokeWidth="1.4" />
+          <circle cx="306" cy="244" r="5" stroke="currentColor" strokeWidth="1.2" />
+          <circle cx="874" cy="244" r="5" stroke="currentColor" strokeWidth="1.2" />
+          <circle cx="468" cy="380" r="5" stroke="currentColor" strokeWidth="1.2" />
+          <circle cx="712" cy="380" r="5" stroke="currentColor" strokeWidth="1.2" />
+          <circle cx="590" cy="386" r="6" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M188 250C312 178 430 144 590 144C750 144 876 178 998 250" stroke="currentColor" strokeDasharray="2 16" strokeWidth="1" />
+          <path d="M168 526C322 466 454 438 590 438C726 438 868 466 1016 526" stroke="currentColor" strokeDasharray="2 18" strokeWidth="1" />
+        </svg>
+        <div className="pointer-events-none absolute right-[8%] top-28 hidden h-px w-72 rotate-[-18deg] bg-gradient-to-r from-transparent via-gold/35 to-transparent lg:block" />
+        <div className="pointer-events-none absolute right-[20%] top-40 hidden h-2 w-2 animate-pulse rounded-full bg-gold/70 shadow-[0_0_24px_rgba(255,126,0,0.38)] lg:block" />
+        <div className="pointer-events-none absolute right-[36%] top-[23rem] hidden h-2 w-2 animate-pulse rounded-full bg-[#005ca8]/50 shadow-[0_0_22px_rgba(0,80,160,0.30)] lg:block" />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-28">
-          <div className="max-w-5xl">
-            <p className="divider-ornament mb-8 max-w-xs text-xs uppercase tracking-[0.3em] text-gold">
-              {t("home.manifestoEyebrow")}
-            </p>
-            <div className="relative">
-              <span className="pointer-events-none absolute -left-4 top-0 hidden h-24 w-px bg-gradient-to-b from-transparent via-gold/60 to-transparent md:block" />
-              <span className="pointer-events-none absolute -right-4 bottom-0 hidden h-24 w-px bg-gradient-to-b from-transparent via-gold/60 to-transparent md:block" />
-              <p className="font-serif text-3xl leading-snug text-foreground sm:text-4xl md:text-5xl">
-                {t("home.manifesto")}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden border-b border-border bg-secondary/30">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/45 to-transparent" />
+      <section className="relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-6 py-24">
           <div className="mb-14 grid gap-8 md:grid-cols-[1fr_0.72fr] md:items-end">
             <div>
@@ -278,6 +481,55 @@ function Home() {
           </div>
         </div>
       </section>
+
+      <SacredSymbolStrip />
+
+      <section className="relative isolate overflow-hidden">
+        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-24 md:py-28 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <p className="divider-ornament mb-8 max-w-xs text-xs uppercase tracking-[0.3em] text-gold">
+              {t("home.manifestoEyebrow")}
+            </p>
+            <h2 className="max-w-2xl font-serif text-4xl leading-tight text-foreground sm:text-5xl md:text-6xl">
+              {t("home.manifestoTitle")}
+            </h2>
+            <p className="mt-8 max-w-xl text-base leading-8 text-muted-foreground">
+              {t("home.manifestoIntro")}
+            </p>
+            <div className="mt-10 flex flex-wrap gap-3">
+              {tr<[string, string][]>("home.manifestoStats", []).map(([value, label]) => (
+                <span
+                  key={value}
+                  className="inline-flex min-h-10 items-center gap-2 border border-border bg-background/75 px-4 text-[10px] uppercase tracking-[0.2em] text-muted-foreground shadow-sm"
+                >
+                  <strong className="font-serif text-lg normal-case tracking-normal text-gold">{value}</strong>
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative border-l border-gold/35 pl-6 md:pl-10">
+            <div className="absolute -left-px top-0 h-24 w-px bg-gold" />
+            <div className="space-y-6">
+              {tr<string[]>("home.manifestoLines", []).map((line, index) => (
+                <div key={line} className="group relative">
+                  <p
+                    className={`font-serif leading-snug ${
+                      index === 0
+                        ? "text-3xl text-foreground sm:text-4xl"
+                        : "text-xl text-foreground/82 sm:text-2xl"
+                    }`}
+                  >
+                    {line}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      </div>
 
       <section className="relative overflow-hidden bg-ink text-background">
         <img
@@ -329,23 +581,6 @@ function Home() {
                 <p className="mt-2 text-sm text-muted-foreground">{description}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-secondary/40">
-        <div className="mx-auto max-w-7xl px-6 py-28">
-          <p className="text-xs uppercase tracking-[0.3em] text-gold">{t("home.journeyEyebrow")}</p>
-          <h2 className="mt-6 max-w-3xl font-serif text-4xl md:text-6xl">
-            {t("home.journeyTitle")}
-          </h2>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link
-              to="/igrejas"
-              className="inline-flex items-center gap-3 bg-ink px-7 py-4 text-sm uppercase tracking-widest text-background transition hover:bg-foreground"
-            >
-              {t("home.fullCollection")} <ArrowRight size={16} />
-            </Link>
           </div>
         </div>
       </section>

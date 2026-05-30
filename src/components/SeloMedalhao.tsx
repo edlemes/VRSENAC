@@ -146,14 +146,24 @@ export function SeloMedalhao({
 
           {emblema === "templo" && (
             <>
-              {/* Edifício monumental: frontão + colunata */}
-              <path d="M34 50 L60 32 L86 50" />
-              <line x1="36" y1="50" x2="84" y2="50" />
-              <line x1="42" y1="54" x2="42" y2="84" />
-              <line x1="52" y1="54" x2="52" y2="84" />
-              <line x1="68" y1="54" x2="68" y2="84" />
-              <line x1="78" y1="54" x2="78" y2="84" />
-              <line x1="34" y1="86" x2="86" y2="86" />
+              {/* Grande Templo: volume arredondado, fachada modular e torre frontal */}
+              <path d="M24 86H96" />
+              <path d="M31 77H87" />
+              <path d="M32 76V61C32 47 44 38 61 38C78 38 90 47 90 61V76" />
+              <path d="M37 61C43 52 52 48 61 48C70 48 78 52 84 61" />
+              <path d="M36 76V64H84V76" />
+              <line x1="43" y1="76" x2="43" y2="65" />
+              <line x1="52" y1="76" x2="52" y2="65" />
+              <line x1="61" y1="76" x2="61" y2="65" />
+              <line x1="70" y1="76" x2="70" y2="65" />
+              <line x1="79" y1="76" x2="79" y2="65" />
+              <path d="M66 86V31" />
+              <path d="M63 31H69" />
+              <path d="M64 25H68" />
+              <line x1="45" y1="86" x2="45" y2="78" />
+              <line x1="57" y1="86" x2="57" y2="78" />
+              <line x1="69" y1="86" x2="69" y2="78" />
+              <line x1="81" y1="86" x2="81" y2="78" />
             </>
           )}
         </g>

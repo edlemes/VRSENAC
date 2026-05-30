@@ -59,6 +59,20 @@ const resources: Record<Language, Dictionary> = {
       churchProject: "Sua igreja no projeto",
       manifestoEyebrow: "Manifesto",
       manifesto: "Um incêndio pode consumir séculos de história em uma noite. Nosso compromisso é que nenhuma oração, nenhum altar, nenhuma pintura sacra do Brasil se perca para o esquecimento.",
+      manifestoTitle: "O patrimônio sagrado também precisa de futuro.",
+      manifestoIntro:
+        "Preservar é manter viva a memória de comunidades inteiras, seus gestos de fé e sua relação com o tempo.",
+      manifestoLines: [
+        "Um incêndio, uma infiltração ou o abandono podem apagar séculos de fé, arte e memória.",
+        "Por isso transformamos templos, altares, imagens e histórias em registros digitais vivos.",
+        "Um acervo acessível para visitantes, pesquisadores, comunidades e futuras gerações.",
+        "Nosso compromisso é preservar o que o tempo ameaça levar: a beleza, a devoção e a memória espiritual do Brasil.",
+      ],
+      manifestoStats: [
+        ["Fé", "memória viva"],
+        ["Arte", "acervo digital"],
+        ["Tempo", "preservação"],
+      ],
       pillarsEyebrow: "Três pilares",
       pillarsTitle: "Por que existimos",
       pillarsIntro:
@@ -209,6 +223,20 @@ const resources: Record<Language, Dictionary> = {
       churchProject: "Your church in the project",
       manifestoEyebrow: "Manifesto",
       manifesto: "A fire can consume centuries of history in one night. Our commitment is that no prayer, no altar and no sacred painting in Brazil is lost to oblivion.",
+      manifestoTitle: "Sacred heritage also needs a future.",
+      manifestoIntro:
+        "Preservation keeps alive the memory of entire communities, their gestures of faith and their relationship with time.",
+      manifestoLines: [
+        "A fire, water damage or abandonment can erase centuries of faith, art and memory.",
+        "That is why we turn temples, altars, images and stories into living digital records.",
+        "A collection accessible to visitors, researchers, communities and future generations.",
+        "Our commitment is to preserve what time threatens to take: the beauty, devotion and spiritual memory of Brazil.",
+      ],
+      manifestoStats: [
+        ["Faith", "living memory"],
+        ["Art", "digital collection"],
+        ["Time", "preservation"],
+      ],
       pillarsEyebrow: "Three pillars",
       pillarsTitle: "Why we exist",
       pillarsIntro:
@@ -359,6 +387,20 @@ const resources: Record<Language, Dictionary> = {
       churchProject: "Tu iglesia en el proyecto",
       manifestoEyebrow: "Manifiesto",
       manifesto: "Un incendio puede consumir siglos de historia en una noche. Nuestro compromiso es que ninguna oración, ningún altar y ninguna pintura sacra de Brasil se pierda en el olvido.",
+      manifestoTitle: "El patrimonio sagrado también necesita futuro.",
+      manifestoIntro:
+        "Preservar es mantener viva la memoria de comunidades enteras, sus gestos de fe y su relación con el tiempo.",
+      manifestoLines: [
+        "Un incendio, una filtración o el abandono pueden borrar siglos de fe, arte y memoria.",
+        "Por eso transformamos templos, altares, imágenes e historias en registros digitales vivos.",
+        "Un acervo accesible para visitantes, investigadores, comunidades y futuras generaciones.",
+        "Nuestro compromiso es preservar lo que el tiempo amenaza llevarse: la belleza, la devoción y la memoria espiritual de Brasil.",
+      ],
+      manifestoStats: [
+        ["Fe", "memoria viva"],
+        ["Arte", "acervo digital"],
+        ["Tiempo", "preservación"],
+      ],
       pillarsEyebrow: "Tres pilares",
       pillarsTitle: "Por qué existimos",
       pillarsIntro:

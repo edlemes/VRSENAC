@@ -38,6 +38,40 @@ function liberada(progresso: Record<string, string[]>, index: number) {
   return index === 0 || trilhaCompleta(progresso, TEMPLOS[index - 1].slug);
 }
 
+function GrandeTemploVectorIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 104 104"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="5"
+    >
+      <path d="M18 76H86" />
+      <path d="M24 67H79" />
+      <path d="M25 66V53C25 41 37 32 53 32C69 32 81 41 81 53V66" />
+      <path d="M30 53C36 45 44 41 53 41C62 41 70 45 76 53" />
+      <path d="M29 66V56H76V66" />
+      <path d="M36 66V57" />
+      <path d="M45 66V57" />
+      <path d="M54 66V57" />
+      <path d="M63 66V57" />
+      <path d="M72 66V57" />
+      <path d="M58 76V28" />
+      <path d="M55 28H61" />
+      <path d="M56 23H60" />
+      <path d="M38 76V68" />
+      <path d="M50 76V68" />
+      <path d="M62 76V68" />
+      <path d="M74 76V68" />
+    </svg>
+  );
+}
+
 function TrilhasHub() {
   const progresso = useProgresso();
   const ganhos = TEMPLOS.filter((t) => trilhaCompleta(progresso, t.slug)).map((t) => t.slug);
@@ -177,7 +211,11 @@ function PortalTrilha({
             destravada ? t.tema.realce : "text-white/30"
           }`}
         >
-          <t.icon size={22} strokeWidth={1.4} />
+          {t.slug === "grande-templo" ? (
+            <GrandeTemploVectorIcon size={27} />
+          ) : (
+            <t.icon size={22} strokeWidth={1.4} />
+          )}
         </span>
         {completa ? (
           <SeloMedalhao slug={t.slug} ganho size={44} />
