@@ -1,19 +1,21 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { LayoutDashboard, Landmark, Newspaper, Images, GalleryHorizontal, FileText, Users, Inbox } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 const items = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { to: "/admin/igrejas", label: "Igrejas & Tours", icon: Landmark },
-  { to: "/admin/solicitacoes", label: "Solicitações", icon: Inbox },
-  { to: "/admin/noticias", label: "Notícias", icon: Newspaper },
-  { to: "/admin/carrossel", label: "Carrossel", icon: GalleryHorizontal },
-  { to: "/admin/galeria", label: "Galeria", icon: Images },
-  { to: "/admin/paginas", label: "Páginas", icon: FileText },
-  { to: "/admin/usuarios", label: "Usuários", icon: Users },
+  { to: "/admin", labelKey: "admin.dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin/igrejas", labelKey: "admin.churchesTours", icon: Landmark },
+  { to: "/admin/solicitacoes", labelKey: "admin.requests", icon: Inbox },
+  { to: "/admin/noticias", labelKey: "admin.news", icon: Newspaper },
+  { to: "/admin/carrossel", labelKey: "admin.carousel", icon: GalleryHorizontal },
+  { to: "/admin/galeria", labelKey: "admin.gallery", icon: Images },
+  { to: "/admin/paginas", labelKey: "admin.pages", icon: FileText },
+  { to: "/admin/usuarios", labelKey: "admin.users", icon: Users },
 ];
 
 export function AdminSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { t } = useI18n();
   return (
     <>
       <nav className="safe-x sticky top-[calc(73px+env(safe-area-inset-top))] z-30 flex gap-2 overflow-x-auto border-b border-border bg-card px-4 py-2 md:hidden">
@@ -30,14 +32,14 @@ export function AdminSidebar() {
               }`}
             >
               <it.icon size={14} />
-              {it.label}
+              {t(it.labelKey)}
             </Link>
           );
         })}
       </nav>
       <aside className="hidden w-56 shrink-0 border-r border-border bg-card md:block">
         <nav className="sticky top-[calc(73px+env(safe-area-inset-top))] flex flex-col gap-1 p-4">
-          <p className="px-3 pb-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Painel</p>
+          <p className="px-3 pb-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">{t("admin.sidebarTitle")}</p>
           {items.map((it) => {
             const active = it.exact ? pathname === it.to : pathname === it.to || pathname.startsWith(it.to + "/");
             return (
@@ -51,7 +53,7 @@ export function AdminSidebar() {
                 }`}
               >
                 <it.icon size={14} />
-                {it.label}
+                {t(it.labelKey)}
               </Link>
             );
           })}

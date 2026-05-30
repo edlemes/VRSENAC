@@ -3,18 +3,21 @@ import { useEffect, useState } from "react";
 import { Menu, X, LogIn, Shield } from "lucide-react";
 import senacLogo from "@/assets/senac-logo.png";
 import { hasSupabaseConfig, supabase } from "@/integrations/supabase/client";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { useI18n } from "@/lib/i18n";
 
 const links = [
-  { to: "/", label: "Início" },
-  { to: "/roteiro-fe", label: "Roteiro da Fé" },
-  { to: "/noticias", label: "Notícias" },
-  { to: "/galeria", label: "Galeria" },
+  { to: "/", labelKey: "nav.home" },
+  { to: "/roteiro-fe", labelKey: "nav.faithRoute" },
+  { to: "/noticias", labelKey: "nav.news" },
+  { to: "/galeria", labelKey: "nav.gallery" },
 ];
 
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!hasSupabaseConfig()) return;
@@ -54,10 +57,10 @@ export function SiteHeader() {
           <span className="h-9 w-px bg-border transition-colors group-hover:bg-accent" />
           <span className="flex min-w-0 flex-col leading-tight">
             <span className="truncate bg-gradient-to-r from-foreground via-foreground to-accent bg-clip-text font-serif text-base tracking-wide text-transparent sm:text-lg">
-              Futuro Simulado
+              {t("common.brandTitle")}
             </span>
             <span className="truncate text-[9px] uppercase tracking-[0.16em] text-accent transition-all duration-500 group-hover:tracking-[0.2em] sm:text-[10px] sm:tracking-[0.2em] sm:group-hover:tracking-[0.28em]">
-              A Nova Era do Turismo
+              {t("common.brandSubtitle")}
             </span>
           </span>
         </Link>
@@ -71,9 +74,10 @@ export function SiteHeader() {
               activeProps={{ className: "text-foreground after:scale-x-100 after:origin-bottom-left" }}
               activeOptions={{ exact: l.to === "/" }}
             >
-              {l.label}
+              {t(l.labelKey)}
             </Link>
           ))}
+          <LanguageSelector />
           <Link
             to={isLoggedIn ? "/admin" : "/admin/login"}
             className={
@@ -82,16 +86,16 @@ export function SiteHeader() {
                 : "inline-flex min-h-12 items-center gap-1.5 border border-border/60 px-3 py-2 text-xs uppercase tracking-widest text-muted-foreground transition hover:border-accent hover:text-foreground"
             }
           >
-            {isLoggedIn ? <><Shield size={12} /> Painel admin</> : <><LogIn size={12} /> Entrar</>}
+            {isLoggedIn ? <><Shield size={12} /> {t("common.adminPanel")}</> : <><LogIn size={12} /> {t("common.enter")}</>}
           </Link>
           <Link
             to="/tours"
             className={ctaClass}
           >
-            Explorar Tours
+            {t("common.exploreTours")}
           </Link>
         </nav>
-        <button className="touch-target inline-flex items-center justify-center md:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
+        <button className="touch-target inline-flex items-center justify-center md:hidden" onClick={() => setOpen(!open)} aria-label={t("common.openMenu")}>
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
@@ -107,9 +111,10 @@ export function SiteHeader() {
                 activeProps={{ className: "text-foreground border-accent" }}
                 activeOptions={{ exact: l.to === "/" }}
               >
-                {l.label}
+                {t(l.labelKey)}
               </Link>
             ))}
+            <LanguageSelector compact />
             <Link
               to={isLoggedIn ? "/admin" : "/admin/login"}
               onClick={() => setOpen(false)}
@@ -119,14 +124,14 @@ export function SiteHeader() {
                   : "mt-2 inline-flex min-h-12 items-center gap-2 border-l-2 border-transparent pl-3 text-sm text-muted-foreground hover:border-accent hover:text-foreground"
               }
             >
-              {isLoggedIn ? <><Shield size={14} /> Painel admin</> : <><LogIn size={14} /> Entrar</>}
+              {isLoggedIn ? <><Shield size={14} /> {t("common.adminPanel")}</> : <><LogIn size={14} /> {t("common.enter")}</>}
             </Link>
             <Link
               to="/tours"
               onClick={() => setOpen(false)}
               className={mobileCtaClass}
             >
-              Explorar Tours
+              {t("common.exploreTours")}
             </Link>
           </nav>
         </div>

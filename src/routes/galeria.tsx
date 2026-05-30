@@ -10,6 +10,7 @@ import mesquitaVisitaGuiada from "@/assets/mesquita-visita-guiada.jpg";
 import mesquitaSalaOracao from "@/assets/mesquita-sala-oracao.jpg";
 import mesquitaFachadaMinarete from "@/assets/mesquita-fachada-minarete.jpg";
 import mesquitaEntradaVitrais from "@/assets/mesquita-entrada-vitrais.jpg";
+import { gallerySectionTranslations, type GallerySectionTranslation, type Language, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/galeria")({
   head: () => ({
@@ -120,45 +121,130 @@ const gallerySections = [
 ];
 
 type DisplayFoto = Pick<Foto, "id" | "titulo" | "descricao" | "alt_text" | "imagem_url">;
+type LocalizedGallerySection = GallerySectionTranslation & {
+  icon: typeof Church;
+  imageUrl?: string;
+  imageAlt?: string;
+};
 
-const staticSectionFotos: Record<string, DisplayFoto[]> = {
-  "mesquita-cuiaba": [
-    {
-      id: "mesquita-interior-mihrab",
-      titulo: "Interior e mihrab",
-      descricao: "Sala de oração com pinturas manuais e escrituras sagradas do Alcorão.",
-      alt_text: "Interior da Mesquita de Cuiabá com mihrab, vitrais e tapetes de oração",
-      imagem_url: mesquitaInteriorMihrab,
-    },
-    {
-      id: "mesquita-visita-guiada",
-      titulo: "Visita guiada",
-      descricao: "Apresentação cultural e religiosa acompanhada por liderança do templo.",
-      alt_text: "Visita guiada no interior da Mesquita de Cuiabá",
-      imagem_url: mesquitaVisitaGuiada,
-    },
-    {
-      id: "mesquita-sala-oracao",
-      titulo: "Sala de oração",
-      descricao: "Ambiente com vitrais, lustre central e tapetes usados nas práticas diárias.",
-      alt_text: "Sala de oração ampla da Mesquita de Cuiabá com vitrais e tapetes",
-      imagem_url: mesquitaSalaOracao,
-    },
-    {
-      id: "mesquita-fachada-minarete",
-      titulo: "Minarete",
-      descricao: "Torre da mesquita, elemento marcante na paisagem do bairro Bandeirantes.",
-      alt_text: "Fachada da Mesquita de Cuiabá com minarete alto",
-      imagem_url: mesquitaFachadaMinarete,
-    },
-    {
-      id: "mesquita-entrada-vitrais",
-      titulo: "Entrada e vitrais",
-      descricao: "Área de entrada com vitrais coloridos e espaço para deixar os calçados.",
-      alt_text: "Entrada interna da Mesquita de Cuiabá com vitrais e sapateira",
-      imagem_url: mesquitaEntradaVitrais,
-    },
-  ],
+const staticSectionFotos: Record<Language, Record<string, DisplayFoto[]>> = {
+  pt: {
+    "mesquita-cuiaba": [
+      {
+        id: "mesquita-interior-mihrab",
+        titulo: "Interior e mihrab",
+        descricao: "Sala de oração com pinturas manuais e escrituras sagradas do Alcorão.",
+        alt_text: "Interior da Mesquita de Cuiabá com mihrab, vitrais e tapetes de oração",
+        imagem_url: mesquitaInteriorMihrab,
+      },
+      {
+        id: "mesquita-visita-guiada",
+        titulo: "Visita guiada",
+        descricao: "Apresentação cultural e religiosa acompanhada por liderança do templo.",
+        alt_text: "Visita guiada no interior da Mesquita de Cuiabá",
+        imagem_url: mesquitaVisitaGuiada,
+      },
+      {
+        id: "mesquita-sala-oracao",
+        titulo: "Sala de oração",
+        descricao: "Ambiente com vitrais, lustre central e tapetes usados nas práticas diárias.",
+        alt_text: "Sala de oração ampla da Mesquita de Cuiabá com vitrais e tapetes",
+        imagem_url: mesquitaSalaOracao,
+      },
+      {
+        id: "mesquita-fachada-minarete",
+        titulo: "Minarete",
+        descricao: "Torre da mesquita, elemento marcante na paisagem do bairro Bandeirantes.",
+        alt_text: "Fachada da Mesquita de Cuiabá com minarete alto",
+        imagem_url: mesquitaFachadaMinarete,
+      },
+      {
+        id: "mesquita-entrada-vitrais",
+        titulo: "Entrada e vitrais",
+        descricao: "Área de entrada com vitrais coloridos e espaço para deixar os calçados.",
+        alt_text: "Entrada interna da Mesquita de Cuiabá com vitrais e sapateira",
+        imagem_url: mesquitaEntradaVitrais,
+      },
+    ],
+  },
+  en: {
+    "mesquita-cuiaba": [
+      {
+        id: "mesquita-interior-mihrab",
+        titulo: "Interior and mihrab",
+        descricao: "Prayer room with handmade paintings and sacred Quranic inscriptions.",
+        alt_text: "Interior of the Cuiabá Mosque with mihrab, stained glass and prayer rugs",
+        imagem_url: mesquitaInteriorMihrab,
+      },
+      {
+        id: "mesquita-visita-guiada",
+        titulo: "Guided visit",
+        descricao: "Cultural and religious presentation guided by a temple representative.",
+        alt_text: "Guided visit inside the Cuiabá Mosque",
+        imagem_url: mesquitaVisitaGuiada,
+      },
+      {
+        id: "mesquita-sala-oracao",
+        titulo: "Prayer room",
+        descricao: "Room with stained glass, central chandelier and rugs used in daily prayers.",
+        alt_text: "Wide prayer room at the Cuiabá Mosque with stained glass and rugs",
+        imagem_url: mesquitaSalaOracao,
+      },
+      {
+        id: "mesquita-fachada-minarete",
+        titulo: "Minaret",
+        descricao: "The mosque tower, a landmark in the Bandeirantes neighborhood landscape.",
+        alt_text: "Facade of the Cuiabá Mosque with tall minaret",
+        imagem_url: mesquitaFachadaMinarete,
+      },
+      {
+        id: "mesquita-entrada-vitrais",
+        titulo: "Entrance and stained glass",
+        descricao: "Entrance area with colorful stained glass and a place to leave shoes.",
+        alt_text: "Inner entrance of the Cuiabá Mosque with stained glass and shoe rack",
+        imagem_url: mesquitaEntradaVitrais,
+      },
+    ],
+  },
+  es: {
+    "mesquita-cuiaba": [
+      {
+        id: "mesquita-interior-mihrab",
+        titulo: "Interior y mihrab",
+        descricao: "Sala de oración con pinturas manuales y escrituras sagradas del Corán.",
+        alt_text: "Interior de la Mezquita de Cuiabá con mihrab, vitrales y alfombras de oración",
+        imagem_url: mesquitaInteriorMihrab,
+      },
+      {
+        id: "mesquita-visita-guiada",
+        titulo: "Visita guiada",
+        descricao: "Presentación cultural y religiosa acompañada por un representante del templo.",
+        alt_text: "Visita guiada en el interior de la Mezquita de Cuiabá",
+        imagem_url: mesquitaVisitaGuiada,
+      },
+      {
+        id: "mesquita-sala-oracao",
+        titulo: "Sala de oración",
+        descricao: "Ambiente con vitrales, lámpara central y alfombras usadas en las prácticas diarias.",
+        alt_text: "Sala de oración amplia de la Mezquita de Cuiabá con vitrales y alfombras",
+        imagem_url: mesquitaSalaOracao,
+      },
+      {
+        id: "mesquita-fachada-minarete",
+        titulo: "Minarete",
+        descricao: "Torre de la mezquita, elemento destacado en el paisaje del barrio Bandeirantes.",
+        alt_text: "Fachada de la Mezquita de Cuiabá con minarete alto",
+        imagem_url: mesquitaFachadaMinarete,
+      },
+      {
+        id: "mesquita-entrada-vitrais",
+        titulo: "Entrada y vitrales",
+        descricao: "Área de entrada con vitrales coloridos y espacio para dejar los zapatos.",
+        alt_text: "Entrada interna de la Mezquita de Cuiabá con vitrales y zapatero",
+        imagem_url: mesquitaEntradaVitrais,
+      },
+    ],
+  },
 };
 
 function normalize(value: string) {
@@ -168,7 +254,7 @@ function normalize(value: string) {
     .toLowerCase();
 }
 
-function matchesSection(foto: Foto, section: (typeof gallerySections)[number]) {
+function matchesSection(foto: Foto, section: LocalizedGallerySection) {
   const searchable = normalize([
     foto.titulo,
     foto.descricao,
@@ -179,15 +265,16 @@ function matchesSection(foto: Foto, section: (typeof gallerySections)[number]) {
   return section.keywords.some((keyword) => searchable.includes(normalize(keyword)));
 }
 
-function getSectionFotos(fotos: Foto[], sectionIndex: number) {
-  const matched = fotos.filter((foto) => matchesSection(foto, gallerySections[sectionIndex]));
+function getSectionFotos(fotos: Foto[], sectionIndex: number, sections: LocalizedGallerySection[], language: Language) {
+  const matched = fotos.filter((foto) => matchesSection(foto, sections[sectionIndex]));
 
-  const withoutMatches = fotos.filter((foto) => !gallerySections.some((section) => matchesSection(foto, section)));
-  const fallback = matched.length > 0 ? [] : withoutMatches.filter((_, index) => index % gallerySections.length === sectionIndex);
-  return [...(staticSectionFotos[gallerySections[sectionIndex].id] ?? []), ...matched, ...fallback];
+  const withoutMatches = fotos.filter((foto) => !sections.some((section) => matchesSection(foto, section)));
+  const fallback = matched.length > 0 ? [] : withoutMatches.filter((_, index) => index % sections.length === sectionIndex);
+  return [...(staticSectionFotos[language][sections[sectionIndex].id] ?? []), ...matched, ...fallback];
 }
 
 function GaleriaPage() {
+  const { language, t } = useI18n();
   const { data, isLoading, error } = useQuery({
     queryKey: ["galeria_fotos"],
     queryFn: listFotos,
@@ -195,33 +282,42 @@ function GaleriaPage() {
   const [active, setActive] = useState<DisplayFoto | null>(null);
   const [activeSection, setActiveSection] = useState(gallerySections[0].id);
   const fotos = data ?? [];
-  const selectedSectionIndex = Math.max(gallerySections.findIndex((section) => section.id === activeSection), 0);
-  const selectedSection = gallerySections[selectedSectionIndex];
-  const selectedFotos = getSectionFotos(fotos, selectedSectionIndex);
+  const translatedSections: LocalizedGallerySection[] = gallerySectionTranslations[language].map((section) => {
+    const presentation = gallerySections.find((item) => item.id === section.id) ?? gallerySections[0];
+    return {
+      ...section,
+      icon: presentation.icon,
+      imageUrl: "imageUrl" in presentation ? presentation.imageUrl : undefined,
+      imageAlt: section.imageAlt ?? ("imageAlt" in presentation ? presentation.imageAlt : undefined),
+    };
+  });
+  const selectedSectionIndex = Math.max(translatedSections.findIndex((section) => section.id === activeSection), 0);
+  const selectedSection = translatedSections[selectedSectionIndex];
+  const selectedFotos = getSectionFotos(fotos, selectedSectionIndex, translatedSections, language);
 
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-6 py-16">
         <header className="mb-12 max-w-2xl">
-          <p className="text-xs uppercase tracking-[0.3em] text-accent">Acervo visual</p>
-          <h1 className="mt-3 font-serif text-4xl text-foreground md:text-5xl">Galeria</h1>
+          <p className="text-xs uppercase tracking-[0.3em] text-accent">{t("gallery.eyebrow")}</p>
+          <h1 className="mt-3 font-serif text-4xl text-foreground md:text-5xl">{t("gallery.pageTitle")}</h1>
           <p className="mt-4 text-muted-foreground">
-            Fotografias organizadas pelos três espaços religiosos registrados pelo projeto Sagrado Digital.
+            {t("gallery.intro")}
           </p>
         </header>
 
-        {isLoading && <p className="text-sm text-muted-foreground">Carregando galeria…</p>}
+        {isLoading && <p className="text-sm text-muted-foreground">{t("gallery.loading")}</p>}
         {error && (
-          <p className="text-sm text-destructive">Não foi possível carregar a galeria agora. Tente novamente em instantes.</p>
+          <p className="text-sm text-destructive">{t("gallery.error")}</p>
         )}
 
         {!isLoading && !error && (
           <div className="space-y-8">
             <div className="grid gap-4 md:grid-cols-3">
-              {gallerySections.map((section, index) => {
+              {translatedSections.map((section, index) => {
                 const Icon = section.icon;
-                const count = getSectionFotos(fotos, index).length;
+                const count = getSectionFotos(fotos, index, translatedSections, language).length;
                 const isActive = section.id === activeSection;
                 const paddedIndex = String(index + 1).padStart(2, "0");
 
@@ -253,7 +349,7 @@ function GaleriaPage() {
                           ? "border-accent/40 bg-accent/10 text-accent"
                           : "border-border/70 text-muted-foreground group-hover:border-accent/40 group-hover:text-accent"
                       }`}>
-                        {count} fotos
+                        {count} {t("gallery.photos")}
                       </span>
                     </div>
 
@@ -268,7 +364,7 @@ function GaleriaPage() {
 
                     <div className="relative mt-8 flex items-center justify-between gap-4 border-t border-border/70 pt-5">
                       <span className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
-                        {isActive ? "Selecionado" : "Explorar seção"}
+                        {isActive ? t("gallery.selected") : t("gallery.exploreSection")}
                       </span>
                       <span className={`flex h-10 w-10 items-center justify-center border transition ${
                         isActive
@@ -286,8 +382,8 @@ function GaleriaPage() {
             <section>
               <div className="mb-5 grid gap-5 border-b border-border/70 pb-5 lg:grid-cols-[1fr_0.9fr]">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-accent">Galeria selecionada</p>
-                  {"imageUrl" in selectedSection && selectedSection.imageUrl && (
+                  <p className="text-xs uppercase tracking-[0.24em] text-accent">{t("gallery.selectedGallery")}</p>
+                  {selectedSection.imageUrl && (
                     <img
                       src={selectedSection.imageUrl}
                       alt={selectedSection.imageAlt}
@@ -306,7 +402,7 @@ function GaleriaPage() {
                   )}
                   {"recommendations" in selectedSection && selectedSection.recommendations && (
                     <div className="mt-6 border-l-2 border-accent/50 pl-4">
-                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">Recomendações de visita</p>
+                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">{t("gallery.visitRecommendations")}</p>
                       <ul className="mt-3 grid gap-2 text-sm leading-6 text-muted-foreground">
                         {selectedSection.recommendations.map((item) => (
                           <li key={item}>{item}</li>
@@ -317,21 +413,21 @@ function GaleriaPage() {
                   <p className="mt-3 text-xs leading-6 text-muted-foreground/70">{selectedSection.reference}</p>
                 </div>
                 <div className="rounded-sm border border-border/70 bg-card/70 p-5">
-                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Informações de visita</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">{t("gallery.visitInfo")}</p>
                   <div className="mt-4 grid gap-4 text-sm text-muted-foreground sm:grid-cols-2 lg:grid-cols-1">
-                    <InfoItem icon={MapPin} label="Endereço" value={selectedSection.address} />
-                    <InfoItem icon={Phone} label="Telefone" value={selectedSection.phone} />
+                    <InfoItem icon={MapPin} label={t("gallery.address")} value={selectedSection.address} />
+                    <InfoItem icon={Phone} label={t("gallery.phone")} value={selectedSection.phone} />
                     <InfoItem icon={MessageCircle} label="WhatsApp" value={selectedSection.whatsapp} />
-                    <InfoItem icon={Mail} label="E-mail" value={selectedSection.email} />
-                    <InfoItem icon={CalendarDays} label="Encontros" value={selectedSection.meetings} />
+                    <InfoItem icon={Mail} label={t("gallery.email")} value={selectedSection.email} />
+                    <InfoItem icon={CalendarDays} label={t("gallery.meetings")} value={selectedSection.meetings} />
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground lg:col-span-2">{selectedFotos.length} imagens nesta divisão</p>
+                <p className="text-sm text-muted-foreground lg:col-span-2">{selectedFotos.length} {t("gallery.imagesInDivision")}</p>
               </div>
 
               {selectedFotos.length === 0 ? (
                 <div className="rounded-sm border border-dashed border-border/70 bg-card/50 px-6 py-14 text-center">
-                  <p className="text-sm text-muted-foreground">Ainda não há fotos publicadas para esta divisão.</p>
+                  <p className="text-sm text-muted-foreground">{t("gallery.noPhotos")}</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -344,7 +440,7 @@ function GaleriaPage() {
                     >
                       <img
                         src={f.imagem_url}
-                        alt={f.alt_text || f.titulo || "Foto"}
+                        alt={f.alt_text || f.titulo || t("gallery.photos")}
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
                         loading="lazy"
                       />
@@ -372,7 +468,7 @@ function GaleriaPage() {
         >
           <button
             type="button"
-            aria-label="Fechar"
+            aria-label={t("gallery.close")}
             className="absolute right-4 top-4 rounded-full bg-background/10 p-2 text-background transition hover:bg-background/20"
             onClick={() => setActive(null)}
           >
@@ -381,7 +477,7 @@ function GaleriaPage() {
           <div className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
             <img
               src={active.imagem_url}
-              alt={active.alt_text || active.titulo || "Foto"}
+              alt={active.alt_text || active.titulo || t("gallery.photos")}
               className="max-h-[80vh] w-auto rounded-sm object-contain"
             />
             {(active.titulo || active.descricao) && (

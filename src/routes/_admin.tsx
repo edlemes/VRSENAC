@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { LogOut, ExternalLink, KeyRound } from "lucide-react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import senacLogo from "@/assets/senac-logo.png";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { useI18n } from "@/lib/i18n";
 
 const SUPER_ADMIN_EMAIL = "admin@senac.com.br";
 
@@ -15,6 +17,7 @@ export const Route = createFileRoute("/_admin")({
 function AdminLayout() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { t } = useI18n();
   const [email, setEmail] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
@@ -36,7 +39,7 @@ function AdminLayout() {
         allowed = !!data;
       }
       if (!allowed) {
-        toast.error("Acesso restrito ao administrador.");
+        toast.error(t("admin.restrictedToast"));
         await supabase.auth.signOut();
         navigate({ to: "/admin/login" });
         return;
@@ -62,18 +65,18 @@ function AdminLayout() {
       );
     });
     return () => sub.subscription.unsubscribe();
-  }, [navigate, pathname]);
+  }, [navigate, pathname, t]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    toast.success("Sessão encerrada.");
+    toast.success(t("admin.sessionClosed"));
     navigate({ to: "/admin/login" });
   };
 
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background px-4 text-center text-muted-foreground">
-        Verificando acesso…
+        {t("admin.verifying")}
       </div>
     );
   }
@@ -87,14 +90,15 @@ function AdminLayout() {
           </Link>
           <div className="flex min-w-0 flex-1 items-center justify-end gap-2 overflow-x-auto sm:gap-3">
             <span className="hidden truncate text-xs text-muted-foreground lg:inline">{email}</span>
+            <LanguageSelector />
             <Link to="/admin/trocar-senha" className="inline-flex min-h-12 shrink-0 items-center gap-2 border border-border px-3 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
-              <KeyRound size={12} /> Minha senha
+              <KeyRound size={12} /> {t("admin.myPassword")}
             </Link>
             <Link to="/" className="inline-flex min-h-12 shrink-0 items-center gap-2 border border-border px-3 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
-              <ExternalLink size={12} /> Ver site
+              <ExternalLink size={12} /> {t("admin.viewSite")}
             </Link>
             <button onClick={handleLogout} className="inline-flex min-h-12 shrink-0 items-center gap-2 border border-border px-3 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
-              <LogOut size={12} /> Sair
+              <LogOut size={12} /> {t("admin.logout")}
             </button>
           </div>
         </div>

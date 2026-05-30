@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ExternalLink, Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import senacLogo from "@/assets/senac-logo.png";
+import { useI18n } from "@/lib/i18n";
 
 const address =
   "Av. Historiador Rubens de Mendonça, Quadra 04 Lote 07, Setor A - Centro Político Administrativo, Cuiabá - MT, 78049-090";
@@ -15,6 +16,8 @@ const socialLinks = [
 ];
 
 export function SiteFooter() {
+  const { t } = useI18n();
+
   return (
     <footer className="safe-footer border-t border-border/60 bg-ink text-background">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 py-14 sm:px-6 sm:py-16 lg:grid-cols-[1.05fr_0.95fr]">
@@ -31,23 +34,23 @@ export function SiteFooter() {
               </span>
             </div>
             <p className="mt-6 max-w-xl text-sm leading-7 text-background/70">
-              Iniciativa Senac MT conectando história, fé e tecnologia por meio de experiências digitais, acervos visuais e tours imersivos.
+              {t("footer.description")}
             </p>
           </div>
 
           <div className="grid gap-8 sm:grid-cols-3">
             <div>
-              <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-gold">Navegar</h4>
+              <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-gold">{t("footer.navigate")}</h4>
               <ul className="mt-4 space-y-3 text-sm text-background/70">
-                <li><Link to="/" className="transition hover:text-background">Início</Link></li>
-                <li><Link to="/noticias" className="transition hover:text-background">Notícias</Link></li>
-                <li><Link to="/galeria" className="transition hover:text-background">Galeria</Link></li>
-                <li><Link to="/tours" className="transition hover:text-background">Explorar Tours</Link></li>
+                <li><Link to="/" className="transition hover:text-background">{t("nav.home")}</Link></li>
+                <li><Link to="/noticias" className="transition hover:text-background">{t("nav.news")}</Link></li>
+                <li><Link to="/galeria" className="transition hover:text-background">{t("nav.gallery")}</Link></li>
+                <li><Link to="/tours" className="transition hover:text-background">{t("common.exploreTours")}</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-gold">Contato</h4>
+              <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-gold">{t("footer.contact")}</h4>
               <ul className="mt-4 space-y-3 text-sm text-background/70">
                 <li>
                   <a href="tel:+556536142450" className="inline-flex items-center gap-2 transition hover:text-background">
@@ -63,7 +66,7 @@ export function SiteFooter() {
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-gold">Redes sociais</h4>
+              <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-gold">{t("footer.social")}</h4>
               <div className="mt-4 flex flex-wrap gap-2">
                 {socialLinks.map(({ label, href, icon: Icon }) => (
                   <a
@@ -93,8 +96,8 @@ export function SiteFooter() {
         <div className="overflow-hidden rounded-md border border-background/10 bg-background/5 shadow-[0_20px_60px_rgba(0,0,0,0.2)]">
           <div className="flex items-center justify-between gap-4 border-b border-background/10 px-5 py-4">
             <div>
-              <h4 className="font-serif text-xl text-background">Onde estamos</h4>
-              <p className="mt-1 text-xs uppercase tracking-[0.2em] text-background/50">Administração Regional Senac MT</p>
+              <h4 className="font-serif text-xl text-background">{t("footer.where")}</h4>
+              <p className="mt-1 text-xs uppercase tracking-[0.2em] text-background/50">{t("footer.regional")}</p>
             </div>
             <a
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
@@ -102,11 +105,11 @@ export function SiteFooter() {
               rel="noreferrer"
               className="hidden min-h-12 items-center gap-2 rounded-sm border border-background/15 px-3 text-xs uppercase tracking-widest text-background/70 transition hover:border-gold hover:text-background sm:inline-flex"
             >
-              Abrir <ExternalLink size={13} />
+              {t("footer.open")} <ExternalLink size={13} />
             </a>
           </div>
           <iframe
-            title="Mapa do Senac Mato Grosso"
+            title={t("footer.mapTitle")}
             src={mapSrc}
             className="h-72 w-full border-0 grayscale-[20%] sm:h-80"
             loading="lazy"
@@ -116,9 +119,9 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-background/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-xs text-background/50 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <span>© {new Date().getFullYear()} Sagrado Digital. Patrimônio eternizado em pixels.</span>
+          <span>© {new Date().getFullYear()} Sagrado Digital. {t("footer.copyright")}</span>
           <a href="https://www.mt.senac.br/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 transition hover:text-background">
-            Site oficial Senac MT <ExternalLink size={12} />
+            {t("footer.officialSite")} <ExternalLink size={12} />
           </a>
         </div>
       </div>

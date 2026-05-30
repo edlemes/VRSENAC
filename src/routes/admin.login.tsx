@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 const ADMIN_EMAIL = "admin@senac.com.br";
 
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/admin/login")({
 
 function AdminLogin() {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState(ADMIN_EMAIL);
   const [password, setPassword] = useState("");
@@ -28,7 +30,7 @@ function AdminLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim().toLowerCase() !== ADMIN_EMAIL) {
-      toast.error("Acesso restrito ao administrador da plataforma.");
+      toast.error(t("admin.restricted"));
       return;
     }
     setLoading(true);
@@ -40,7 +42,7 @@ function AdminLogin() {
           options: { emailRedirectTo: `${window.location.origin}/admin` },
         });
         if (error) throw error;
-        toast.success("Conta admin criada. Entrando…");
+        toast.success(`${t("admin.createAccount")} OK. ${t("common.enter")}...`);
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -63,18 +65,18 @@ function AdminLogin() {
         </Link>
 
         <div className="border border-border bg-card p-8">
-          <p className="text-xs uppercase tracking-[0.3em] text-gold">Painel administrativo</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-gold">{t("admin.panel")}</p>
           <h1 className="mt-3 font-serif text-3xl">
-            {mode === "login" ? "Entrar no painel" : "Criar conta admin"}
+            {mode === "login" ? t("admin.loginTitle") : t("admin.createTitle")}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Acesso restrito ao administrador da plataforma.
+            {t("admin.restricted")}
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             <div>
               <label className="text-xs uppercase tracking-widest text-muted-foreground">
-                E-mail
+                {t("admin.email")}
               </label>
               <input
                 type="email"
@@ -86,7 +88,7 @@ function AdminLogin() {
             </div>
             <div>
               <label className="text-xs uppercase tracking-widest text-muted-foreground">
-                Senha
+                {t("admin.password")}
               </label>
               <input
                 type="password"
@@ -102,7 +104,7 @@ function AdminLogin() {
               disabled={loading}
               className="mt-2 w-full bg-gold py-3 text-sm uppercase tracking-widest text-ink transition hover:bg-gold-soft disabled:opacity-50"
             >
-              {loading ? "Aguarde…" : mode === "login" ? "Entrar" : "Criar conta"}
+              {loading ? t("admin.wait") : mode === "login" ? t("common.enter") : t("admin.createAccount")}
             </button>
           </form>
 
@@ -112,8 +114,8 @@ function AdminLogin() {
             className="mt-6 w-full text-center text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground"
           >
             {mode === "login"
-              ? "Primeira vez? Criar conta admin"
-              : "Já tenho conta · Entrar"}
+              ? t("admin.firstTime")
+              : t("admin.alreadyHave")}
           </button>
         </div>
 
@@ -121,7 +123,7 @@ function AdminLogin() {
           to="/"
           className="mt-6 block text-center text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground"
         >
-          ← Voltar ao site
+          ← {t("admin.backToSite")}
         </Link>
       </div>
     </div>
