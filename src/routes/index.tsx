@@ -56,141 +56,53 @@ function hasPublicSlideContent(slide: { imagem_url?: string; titulo?: string; su
   return Boolean(slide.imagem_url?.trim());
 }
 
-function CanvasGridHero({ slides }: { slides: HeroSlide[] }) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const imageRef = useRef<HTMLImageElement | null>(null);
-  const pointerRef = useRef({
-    x: 0.5,
-    y: 0.5,
-    tx: 0.5,
-    ty: 0.5,
-    active: false,
-  });
+function CinematicHeroBackdrop({ slides }: { slides: HeroSlide[] }) {
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const [idx, setIdx] = useState(0);
-  const prefersReducedMotion =
-    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   useEffect(() => {
-    if (slides.length <= 1 || prefersReducedMotion) return;
+    if (slides.length <= 1) return;
     const id = window.setInterval(() => {
       if (!document.hidden) setIdx((i) => (i + 1) % slides.length);
     }, 6500);
     return () => window.clearInterval(id);
-  }, [prefersReducedMotion, slides.length]);
-
-  useEffect(() => {
-    const img = new Image();
-    img.decoding = "async";
-    img.src = slides[idx]?.src ?? "";
-    imageRef.current = img;
-  }, [idx, slides]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let frame = 0;
-    let disposed = false;
-
-    const draw = () => {
-      if (disposed) return;
-
-      const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const width = Math.max(1, Math.floor(rect.width * dpr));
-      const height = Math.max(1, Math.floor(rect.height * dpr));
-
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-      }
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, rect.width, rect.height);
-      ctx.fillStyle = "#061733";
-      ctx.fillRect(0, 0, rect.width, rect.height);
-
-      const img = imageRef.current;
-      if (!img || !img.complete || img.naturalWidth === 0) {
-        frame = window.requestAnimationFrame(draw);
-        return;
-      }
-
-      const pointer = pointerRef.current;
-      pointer.x += (pointer.tx - pointer.x) * 0.12;
-      pointer.y += (pointer.ty - pointer.y) * 0.12;
-
-      const cover = Math.max(rect.width / img.naturalWidth, rect.height / img.naturalHeight);
-      const sourceWidth = rect.width / cover;
-      const sourceHeight = rect.height / cover;
-      const sourceX = (img.naturalWidth - sourceWidth) / 2;
-      const sourceY = (img.naturalHeight - sourceHeight) / 2;
-      const cols = rect.width < 640 ? 18 : 34;
-      const rows = Math.max(12, Math.round(cols * (rect.height / rect.width)));
-      const cellW = rect.width / cols;
-      const cellH = rect.height / rows;
-      const px = pointer.x * rect.width;
-      const py = pointer.y * rect.height;
-      const radius = Math.min(rect.width, rect.height) * (pointer.active ? 0.42 : 0.28);
-
-      for (let y = 0; y < rows; y += 1) {
-        for (let x = 0; x < cols; x += 1) {
-          const dx = x * cellW;
-          const dy = y * cellH;
-          const cx = dx + cellW / 2;
-          const cy = dy + cellH / 2;
-          const distance = Math.hypot(cx - px, cy - py);
-          const force = Math.max(0, 1 - distance / radius);
-          const angle = Math.atan2(cy - py, cx - px);
-          const lift = force * force;
-          const push = lift * (pointer.active ? 34 : 18);
-          const zoom = 1 + lift * 0.08;
-          const gap = lift * 3.5;
-
-          ctx.drawImage(
-            img,
-            sourceX + (dx / rect.width) * sourceWidth,
-            sourceY + (dy / rect.height) * sourceHeight,
-            (cellW / rect.width) * sourceWidth,
-            (cellH / rect.height) * sourceHeight,
-            dx + Math.cos(angle) * push + gap / 2,
-            dy + Math.sin(angle) * push + gap / 2,
-            cellW * zoom - gap,
-            cellH * zoom - gap,
-          );
-        }
-      }
-
-      frame = window.requestAnimationFrame(draw);
-    };
-
-    draw();
-    return () => {
-      disposed = true;
-      window.cancelAnimationFrame(frame);
-    };
-  }, [prefersReducedMotion]);
+  }, [slides.length]);
 
   return (
-    <>
-      <canvas
-        ref={canvasRef}
+    <div
+      ref={rootRef}
+      className="absolute inset-0 overflow-hidden"
+      onPointerMove={(event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        rootRef.current?.style.setProperty("--spot-x", `${event.clientX - rect.left}px`);
+        rootRef.current?.style.setProperty("--spot-y", `${event.clientY - rect.top}px`);
+        rootRef.current?.style.setProperty("--spot-opacity", "1");
+      }}
+      onPointerLeave={() => {
+        rootRef.current?.style.setProperty("--spot-opacity", "0");
+      }}
+    >
+      {slides.map((slide, index) => (
+        <img
+          key={slide.src + index}
+          src={slide.src}
+          alt={slide.alt}
+          width={1920}
+          height={1280}
+          loading={index === 0 ? "eager" : "lazy"}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1400ms] ease-in-out ${
+            index === idx ? "opacity-100 animate-ken-burns" : "opacity-0"
+          }`}
+        />
+      ))}
+      <div
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full"
-        onPointerEnter={() => {
-          pointerRef.current.active = true;
-        }}
-        onPointerLeave={() => {
-          pointerRef.current.active = false;
-          pointerRef.current.tx = 0.5;
-          pointerRef.current.ty = 0.5;
-        }}
-        onPointerMove={(event) => {
-          const rect = event.currentTarget.getBoundingClientRect();
-          pointerRef.current.tx = (event.clientX - rect.left) / rect.width;
-          pointerRef.current.ty = (event.clientY - rect.top) / rect.height;
+        className="pointer-events-none absolute inset-0 transition-opacity duration-300"
+        style={{
+          opacity: "var(--spot-opacity, 0)",
+          background:
+            "radial-gradient(circle 22rem at var(--spot-x, 50%) var(--spot-y, 50%), rgba(255, 255, 255, 0.2), rgba(255, 130, 0, 0.08) 28%, transparent 62%)",
+          mixBlendMode: "screen",
         }}
       />
       {slides.length > 1 && (
@@ -212,7 +124,7 @@ function CanvasGridHero({ slides }: { slides: HeroSlide[] }) {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }
 
@@ -261,8 +173,8 @@ function Home() {
       <SiteHeader />
 
       <section className="relative isolate overflow-hidden">
-        <CanvasGridHero slides={slides} />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/40 to-ink/90" />
+        <CinematicHeroBackdrop slides={slides} />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/40 to-ink/90" />
         <div className="relative mx-auto flex min-h-[calc(100dvh-4rem)] max-w-7xl flex-col justify-end px-4 pb-24 pt-28 sm:px-6 sm:pb-20 sm:pt-32">
           <p className="mb-5 flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-gold-soft sm:mb-6 sm:text-xs sm:tracking-[0.3em]">
             <span className="h-px w-10 bg-accent" /> {t("home.heroEyebrow")}
