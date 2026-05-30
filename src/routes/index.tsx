@@ -398,7 +398,7 @@ function Home() {
         <svg
           aria-hidden="true"
           viewBox="0 0 1200 760"
-          className="pointer-events-none absolute right-[-8rem] top-0 hidden h-[48rem] w-[72rem] text-[#005ca8] opacity-[0.16] lg:block"
+          className="pointer-events-none absolute left-[-14rem] top-0 hidden h-[48rem] w-[72rem] text-[#005ca8] opacity-[0.14] lg:block"
           fill="none"
         >
           <path d="M196 612H984" stroke="currentColor" strokeWidth="1" />
@@ -427,7 +427,7 @@ function Home() {
         <svg
           aria-hidden="true"
           viewBox="0 0 1200 760"
-          className="pointer-events-none absolute left-[-16rem] top-[34rem] hidden h-[48rem] w-[72rem] text-[#0f8a78] opacity-[0.12] lg:block"
+          className="pointer-events-none absolute right-[-16rem] top-[34rem] hidden h-[48rem] w-[72rem] text-[#0f8a78] opacity-[0.12] lg:block"
           fill="none"
         >
           <path d="M180 620H1040" stroke="currentColor" strokeWidth="1" />
@@ -453,7 +453,7 @@ function Home() {
         <svg
           aria-hidden="true"
           viewBox="0 0 1200 760"
-          className="pointer-events-none absolute right-[-12rem] top-[62rem] hidden h-[48rem] w-[72rem] text-[#b46b21] opacity-[0.115] lg:block"
+          className="pointer-events-none absolute left-[-12rem] top-[62rem] hidden h-[48rem] w-[72rem] text-[#b46b21] opacity-[0.115] lg:block"
           fill="none"
         >
           <path d="M156 626H1044" stroke="currentColor" strokeWidth="1" />
@@ -499,9 +499,17 @@ function Home() {
                 {t("home.pillarsTitle")}
               </h2>
             </div>
-            <p className="max-w-md text-sm leading-7 text-muted-foreground md:justify-self-end">
-              {t("home.pillarsIntro")}
-            </p>
+            <div className="relative max-w-md border-l border-gold/40 bg-background/60 py-4 pl-5 pr-4 shadow-[0_18px_55px_rgba(0,92,168,0.06)] backdrop-blur md:justify-self-end">
+              <div className="pointer-events-none absolute -left-px top-0 h-12 w-px bg-gold" />
+              <p className="font-serif text-xl leading-tight text-foreground">
+                <span className="bg-gradient-to-r from-[#005ca8] via-[#0f6db5] to-gold bg-clip-text text-transparent">
+                  {t("home.pillarsIntroLead")}
+                </span>
+              </p>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                {t("home.pillarsIntro")}
+              </p>
+            </div>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {tr<{ title: string; text: string }[]>("home.pillars", []).map((pillar, index) => {
@@ -512,8 +520,9 @@ function Home() {
               return (
               <div
                 key={pillar.title}
-                className="group relative overflow-hidden border border-border/80 bg-background/80 p-8 shadow-[0_18px_55px_rgba(15,23,42,0.04)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-gold/40 hover:bg-background hover:shadow-[0_24px_70px_rgba(15,23,42,0.08)] md:p-9"
+                className="group relative overflow-hidden border border-border/80 bg-background/82 p-8 shadow-[0_18px_55px_rgba(15,23,42,0.04)] backdrop-blur transition duration-300 before:absolute before:inset-x-0 before:top-0 before:h-px before:origin-left before:scale-x-0 before:bg-gradient-to-r before:from-gold before:via-[#005ca8]/70 before:to-transparent before:transition-transform before:duration-500 hover:-translate-y-1 hover:border-gold/45 hover:bg-background hover:shadow-[0_24px_70px_rgba(0,92,168,0.11)] hover:before:scale-x-100 md:p-9"
               >
+                <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(255,126,0,0.13),transparent_66%)] opacity-0 blur-2xl transition duration-500 group-hover:opacity-100" />
                 <span className="absolute right-6 top-5 font-serif text-5xl leading-none text-gold/10 transition group-hover:text-gold/20">
                   {numero}
                 </span>

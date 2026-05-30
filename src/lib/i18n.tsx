@@ -75,8 +75,9 @@ const resources: Record<Language, Dictionary> = {
       ],
       pillarsEyebrow: "Três pilares",
       pillarsTitle: "Por que existimos",
+      pillarsIntroLead: "Do espaço físico ao gêmeo digital.",
       pillarsIntro:
-        "Uma plataforma na intersecção entre turismo experiencial, espiritualidade digital e preservação patrimonial.",
+        "Transformamos cada espaço em acervo vivo para memória, educação, turismo, pesquisa e futuras ações de restauro.",
       pillars: [
         {
           title: "Preservar",
@@ -334,8 +335,9 @@ const resources: Record<Language, Dictionary> = {
       ],
       pillarsEyebrow: "Three pillars",
       pillarsTitle: "Why we exist",
+      pillarsIntroLead: "From physical space to digital twin.",
       pillarsIntro:
-        "A platform at the intersection of experiential tourism, digital spirituality and heritage preservation.",
+        "We transform each space into a living collection for memory, education, tourism, research and future restoration work.",
       pillars: [
         {
           title: "Preserve",
@@ -593,8 +595,9 @@ const resources: Record<Language, Dictionary> = {
       ],
       pillarsEyebrow: "Tres pilares",
       pillarsTitle: "Por qué existimos",
+      pillarsIntroLead: "Del espacio físico al gemelo digital.",
       pillarsIntro:
-        "Una plataforma en la intersección entre turismo experiencial, espiritualidad digital y preservación patrimonial.",
+        "Transformamos cada espacio en un acervo vivo para memoria, educación, turismo, investigación y futuras acciones de restauración.",
       pillars: [
         {
           title: "Preservar",
