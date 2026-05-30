@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { listIgrejas } from "@/lib/igrejas";
@@ -8,8 +8,7 @@ import candles from "@/assets/candles.jpg";
 import mesquitaEntradaVitrais from "@/assets/mesquita-entrada-vitrais.jpg";
 import mesquitaFachadaMinarete from "@/assets/mesquita-fachada-minarete.jpg";
 import mesquitaSalaOracao from "@/assets/mesquita-sala-oracao.jpg";
-import { ArrowRight, Scan, Heart, Landmark, Flame, Users, Sparkles, Compass, MapPin } from "lucide-react";
-import type { Igreja } from "@/lib/igrejas";
+import { ArrowRight, Scan, Heart, Landmark, Flame, Users, Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
@@ -57,32 +56,143 @@ function hasPublicSlideContent(slide: { imagem_url?: string; titulo?: string; su
   return Boolean(slide.imagem_url?.trim());
 }
 
-function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
+function CanvasGridHero({ slides }: { slides: HeroSlide[] }) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const pointerRef = useRef({
+    x: 0.5,
+    y: 0.5,
+    tx: 0.5,
+    ty: 0.5,
+    active: false,
+  });
   const [idx, setIdx] = useState(0);
+  const prefersReducedMotion =
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   useEffect(() => {
-    if (slides.length <= 1) return;
-    const tick = () => {
+    if (slides.length <= 1 || prefersReducedMotion) return;
+    const id = window.setInterval(() => {
       if (!document.hidden) setIdx((i) => (i + 1) % slides.length);
+    }, 6500);
+    return () => window.clearInterval(id);
+  }, [prefersReducedMotion, slides.length]);
+
+  useEffect(() => {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = slides[idx]?.src ?? "";
+    imageRef.current = img;
+  }, [idx, slides]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let frame = 0;
+    let disposed = false;
+
+    const draw = () => {
+      if (disposed) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(1, Math.floor(rect.width * dpr));
+      const height = Math.max(1, Math.floor(rect.height * dpr));
+
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      ctx.fillStyle = "#061733";
+      ctx.fillRect(0, 0, rect.width, rect.height);
+
+      const img = imageRef.current;
+      if (!img || !img.complete || img.naturalWidth === 0) {
+        frame = window.requestAnimationFrame(draw);
+        return;
+      }
+
+      const pointer = pointerRef.current;
+      pointer.x += (pointer.tx - pointer.x) * 0.12;
+      pointer.y += (pointer.ty - pointer.y) * 0.12;
+
+      const cover = Math.max(rect.width / img.naturalWidth, rect.height / img.naturalHeight);
+      const sourceWidth = rect.width / cover;
+      const sourceHeight = rect.height / cover;
+      const sourceX = (img.naturalWidth - sourceWidth) / 2;
+      const sourceY = (img.naturalHeight - sourceHeight) / 2;
+      const cols = rect.width < 640 ? 18 : 34;
+      const rows = Math.max(12, Math.round(cols * (rect.height / rect.width)));
+      const cellW = rect.width / cols;
+      const cellH = rect.height / rows;
+      const px = pointer.x * rect.width;
+      const py = pointer.y * rect.height;
+      const radius = Math.min(rect.width, rect.height) * (pointer.active ? 0.42 : 0.28);
+
+      for (let y = 0; y < rows; y += 1) {
+        for (let x = 0; x < cols; x += 1) {
+          const dx = x * cellW;
+          const dy = y * cellH;
+          const cx = dx + cellW / 2;
+          const cy = dy + cellH / 2;
+          const distance = Math.hypot(cx - px, cy - py);
+          const force = Math.max(0, 1 - distance / radius);
+          const angle = Math.atan2(cy - py, cx - px);
+          const lift = force * force;
+          const push = lift * (pointer.active ? 34 : 18);
+          const zoom = 1 + lift * 0.08;
+          const gap = lift * 3.5;
+
+          ctx.drawImage(
+            img,
+            sourceX + (dx / rect.width) * sourceWidth,
+            sourceY + (dy / rect.height) * sourceHeight,
+            (cellW / rect.width) * sourceWidth,
+            (cellH / rect.height) * sourceHeight,
+            dx + Math.cos(angle) * push + gap / 2,
+            dy + Math.sin(angle) * push + gap / 2,
+            cellW * zoom - gap,
+            cellH * zoom - gap,
+          );
+        }
+      }
+
+      frame = window.requestAnimationFrame(draw);
     };
-    const id = setInterval(tick, 5000);
-    return () => clearInterval(id);
-  }, [slides.length]);
+
+    draw();
+    return () => {
+      disposed = true;
+      window.cancelAnimationFrame(frame);
+    };
+  }, [prefersReducedMotion]);
 
   return (
     <>
-      {slides.map((s, i) => (
-        <img
-          key={s.src + i}
-          src={s.src}
-          alt={s.alt}
-          width={1920}
-          height={1280}
-          loading={i === 0 ? "eager" : "lazy"}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-in-out ${
-            i === idx ? "opacity-100" : "opacity-0"
-          }`}
-        />
-      ))}
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full"
+        onPointerEnter={() => {
+          pointerRef.current.active = true;
+        }}
+        onPointerLeave={() => {
+          pointerRef.current.active = false;
+          pointerRef.current.tx = 0.5;
+          pointerRef.current.ty = 0.5;
+        }}
+        onPointerMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          pointerRef.current.tx = (event.clientX - rect.left) / rect.width;
+          pointerRef.current.ty = (event.clientY - rect.top) / rect.height;
+        }}
+      />
       {slides.length > 1 && (
         <>
           <div className="safe-x absolute bottom-20 left-0 z-10 max-w-md px-4 text-[10px] uppercase tracking-[0.18em] text-background/80 transition-opacity duration-700 sm:bottom-6 sm:left-6 sm:px-0 sm:text-xs sm:tracking-[0.25em]">
@@ -106,36 +216,6 @@ function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   );
 }
 
-function CinemaImage({ images, alt }: { images: string[]; alt: string }) {
-  const list = images.length > 0 ? images : [""];
-  const [idx, setIdx] = useState(0);
-  useEffect(() => {
-    if (list.length <= 1) return;
-    const id = setInterval(() => {
-      if (!document.hidden) setIdx((i) => (i + 1) % list.length);
-    }, 6000);
-    return () => clearInterval(id);
-  }, [list.length]);
-
-  return (
-    <div className="relative aspect-[4/5] w-full overflow-hidden">
-      {list.map((src, i) => (
-        <img
-          key={src + i}
-          src={src}
-          alt={alt}
-          width={1280}
-          height={1600}
-          loading={i === 0 ? "eager" : "lazy"}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1600ms] ease-in-out ${
-            i === idx ? "opacity-100 animate-ken-burns" : "opacity-0"
-          }`}
-        />
-      ))}
-    </div>
-  );
-}
-
 function Home() {
   const { t, tr } = useI18n();
   const { data: igrejas = [] } = useQuery({
@@ -147,7 +227,6 @@ function Home() {
     queryFn: () => import("@/lib/carrossel").then((m) => m.listSlides({ onlyAtivos: true })),
     staleTime: 0,
   });
-  const destaque = igrejas.find((i) => i.destaque) ?? igrejas[0];
   const heroSlideTexts = tr<[string, string][]>("home.heroSlides", []);
 
   let slides: HeroSlide[] = heroSlides
@@ -182,7 +261,7 @@ function Home() {
       <SiteHeader />
 
       <section className="relative isolate overflow-hidden">
-        <HeroCarousel slides={slides} />
+        <CanvasGridHero slides={slides} />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/40 to-ink/90" />
         <div className="relative mx-auto flex min-h-[calc(100dvh-4rem)] max-w-7xl flex-col justify-end px-4 pb-24 pt-28 sm:px-6 sm:pb-20 sm:pt-32">
           <p className="mb-5 flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-gold-soft sm:mb-6 sm:text-xs sm:tracking-[0.3em]">
@@ -288,59 +367,6 @@ function Home() {
         </div>
       </section>
 
-      {destaque && (
-        <section className="bg-background">
-          <div className="mx-auto max-w-7xl px-6 py-24">
-            <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
-              <div className="relative overflow-hidden bg-secondary">
-                <CinemaImage
-                  images={[
-                    destaque.imagem_url,
-                    ...igrejas
-                      .filter((i) => i.slug !== destaque.slug && i.imagem_url)
-                      .map((i) => i.imagem_url),
-                  ].filter(Boolean)}
-                  alt={destaque.nome}
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent" />
-                <div className="absolute left-6 top-6 z-10 bg-gold px-3 py-1 text-xs uppercase tracking-widest text-ink">
-                  {t("home.featured")}
-                </div>
-              </div>
-              <div className="flex flex-col justify-center">
-                <p className="text-xs uppercase tracking-[0.3em] text-gold">
-                  {destaque.cidade}, {destaque.estado} · {destaque.estilo}
-                </p>
-                <h2 className="mt-4 font-serif text-4xl md:text-5xl">{destaque.nome}</h2>
-                <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                  {destaque.descricao}
-                </p>
-                {destaque.pontos_de_fe.length > 0 && (
-                  <div className="mt-10 grid grid-cols-2 gap-px bg-border">
-                    {destaque.pontos_de_fe.map((p) => (
-                      <div key={p} className="bg-background p-4 text-sm">
-                        <span className="text-gold">✣ </span>
-                        {p}
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <Link
-                  to="/igrejas/$slug"
-                  params={{ slug: destaque.slug }}
-                  className="group mt-10 inline-flex w-fit items-center gap-3 border-b border-foreground pb-1 text-sm uppercase tracking-widest"
-                >
-                  {t("home.enterVirtualTour")}
-                  <ArrowRight size={16} className="transition group-hover:translate-x-1" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      <ExplorarToursSection igrejas={igrejas} />
-
       <section className="relative overflow-hidden bg-ink text-background">
         <img
           src={candles}
@@ -414,82 +440,5 @@ function Home() {
 
       <SiteFooter />
     </div>
-  );
-}
-
-function ExplorarToursSection({ igrejas }: { igrejas: Igreja[] }) {
-  const { t } = useI18n();
-  const destaques = igrejas
-    .flatMap((i) =>
-      (i.tours_externos ?? []).map((url, idx) => ({
-        id: `${i.slug}-${idx}`,
-        url,
-        idx,
-        total: i.tours_externos.length,
-        igreja: i,
-      })),
-    )
-    .slice(0, 3);
-
-  if (destaques.length === 0) return null;
-
-  return (
-    <section id="explorar-tours" className="border-y border-border bg-secondary/30 scroll-mt-20">
-      <div className="mx-auto max-w-7xl px-6 py-24">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <p className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-gold">
-              <Compass size={12} /> {t("home.matterport")}
-            </p>
-            <h2 className="mt-4 font-serif text-4xl md:text-5xl">{t("home.toursTitle")}</h2>
-            <p className="mt-4 max-w-2xl text-muted-foreground">
-              {t("home.toursText")}
-            </p>
-          </div>
-          <Link
-            to="/tours"
-            className="group inline-flex items-center gap-2 border-b border-foreground pb-1 text-xs uppercase tracking-widest"
-          >
-            {t("home.allTours")}
-            <ArrowRight size={14} className="transition group-hover:translate-x-1" />
-          </Link>
-        </div>
-
-        <div className="mt-12 grid gap-px bg-border md:grid-cols-3">
-          {destaques.map((tour) => (
-            <Link
-              key={tour.id}
-              to="/tours"
-              hash={tour.id}
-              className="group relative block overflow-hidden bg-background"
-            >
-              {tour.igreja.imagem_url ? (
-                <img
-                  src={tour.igreja.imagem_url}
-                  alt={tour.igreja.nome}
-                  loading="lazy"
-                  className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
-                />
-              ) : (
-                <div className="aspect-[4/3] w-full bg-secondary" />
-              )}
-              <div className="absolute left-4 top-4 inline-flex items-center gap-1.5 bg-ink/80 px-2.5 py-1 text-[10px] uppercase tracking-widest text-gold backdrop-blur">
-                <Compass size={10} /> Matterport
-                {tour.total > 1 && <span className="text-background/70">· {tour.idx + 1}/{tour.total}</span>}
-              </div>
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 via-ink/50 to-transparent p-5 text-background">
-                <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-background/80">
-                  <MapPin size={10} /> {tour.igreja.cidade}, {tour.igreja.estado}
-                </p>
-                <h3 className="mt-2 font-serif text-2xl">{tour.igreja.nome}</h3>
-                <span className="mt-3 inline-flex items-center gap-2 text-[11px] uppercase tracking-widest text-gold">
-                  {t("home.visitTour")} <ArrowRight size={12} className="transition group-hover:translate-x-1" />
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }
