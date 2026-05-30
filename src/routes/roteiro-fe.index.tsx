@@ -167,7 +167,7 @@ function TrilhasHub() {
 
       {/* Portais das trilhas (fases sequenciais) */}
       <section className="relative pb-28">
-        <div className="mx-auto grid max-w-7xl gap-5 px-6 md:grid-cols-3">
+        <div className="faith-route-grid mx-auto grid max-w-7xl gap-5 px-6 md:grid-cols-3">
           {TEMPLOS.map((t, i) => (
             <PortalTrilha
               key={t.slug}
@@ -204,38 +204,40 @@ function PortalTrilha({
   const anterior = index > 0 ? TEMPLOS[index - 1] : null;
 
   const corpo = (
-    <div className="relative flex h-full flex-col rounded-2xl bg-ink/40 p-7 backdrop-blur-xl sm:p-8">
-      <div className="flex items-center justify-between">
-        <span
-          className={`flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 bg-white/10 ${
-            destravada ? t.tema.realce : "text-white/30"
-          }`}
-        >
-          {t.slug === "grande-templo" ? (
-            <GrandeTemploVectorIcon size={27} />
+    <div className="faith-route-card-body relative p-7 sm:p-8">
+      <div>
+        <div className="flex items-center justify-between">
+          <span
+            className={`flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 bg-white/10 ${
+              destravada ? t.tema.realce : "text-white/30"
+            }`}
+          >
+            {t.slug === "grande-templo" ? (
+              <GrandeTemploVectorIcon size={27} />
+            ) : (
+              <t.icon size={22} strokeWidth={1.4} />
+            )}
+          </span>
+          {completa ? (
+            <SeloMedalhao slug={t.slug} ganho size={44} />
           ) : (
-            <t.icon size={22} strokeWidth={1.4} />
+            <span className="font-serif text-4xl leading-none text-white/20">{t.ano}</span>
           )}
-        </span>
-        {completa ? (
-          <SeloMedalhao slug={t.slug} ganho size={44} />
-        ) : (
-          <span className="font-serif text-4xl leading-none text-white/20">{t.ano}</span>
-        )}
+        </div>
+
+        <p className="mt-6 flex min-h-8 items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/60">
+          <Clock size={12} className="text-gold" /> Fase {index + 1} · {t.tipo}
+        </p>
+        <h2 className="faith-route-title mt-2 font-serif text-2xl leading-tight text-white">{t.nome}</h2>
+        <p className={`faith-route-focus mt-2 text-sm font-medium uppercase tracking-wide ${t.tema.realce}`}>
+          Foco: {t.trilha.foco}
+        </p>
       </div>
 
-      <p className="mt-6 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/60">
-        <Clock size={12} className="text-gold" /> Fase {index + 1} · {t.tipo}
-      </p>
-      <h2 className="mt-2 font-serif text-2xl leading-tight text-white">{t.nome}</h2>
-      <p className={`mt-2 text-sm font-medium uppercase tracking-wide ${t.tema.realce}`}>
-        Foco: {t.trilha.foco}
-      </p>
-
       {destravada ? (
-        <>
+        <div>
           {/* Barra de progresso */}
-          <div className="mt-6">
+          <div className="mt-8">
             <div className="flex items-center justify-between text-[11px] uppercase tracking-widest text-white/70">
               <span>{pct}% concluído</span>
               <span>
@@ -250,7 +252,7 @@ function PortalTrilha({
             </div>
           </div>
 
-          <span className="mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-xs font-semibold uppercase tracking-widest text-white transition group-hover:bg-white/15">
+          <span className="mt-7 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-xs font-semibold uppercase tracking-widest text-white transition group-hover:bg-white/15">
             {completa ? (
               <>
                 <CheckCircle2 size={15} className="text-gold" /> Revisar fase
@@ -266,12 +268,12 @@ function PortalTrilha({
             )}
             <ArrowRight size={14} className="transition group-hover:translate-x-1" />
           </span>
-        </>
+        </div>
       ) : (
-        <div className="mt-6 flex flex-1 flex-col justify-end">
-          <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs text-white/60">
+        <div className="mt-8">
+          <div className="flex min-h-16 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs text-white/60">
             <Lock size={14} className="text-white/40" />
-            Conclua a fase “{anterior?.nome}” para desbloquear.
+            <span className="faith-route-lock-text">Conclua a fase “{anterior?.nome}” para desbloquear.</span>
           </div>
         </div>
       )}
@@ -283,7 +285,7 @@ function PortalTrilha({
     return (
       <div
         aria-label={`Fase bloqueada: ${t.nome}`}
-        className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-px opacity-70 grayscale"
+        className="faith-route-card relative h-full overflow-hidden p-px opacity-70 grayscale"
       >
         {corpo}
       </div>
@@ -296,7 +298,7 @@ function PortalTrilha({
       to="/roteiro-fe/$slug"
       params={{ slug: t.slug }}
       aria-label={`Abrir fase: ${t.nome}`}
-      className={`group glass-card relative block overflow-hidden rounded-2xl bg-gradient-to-br ${t.tema.gradiente} p-px transition-all duration-300 hover:-translate-y-1.5 focus-visible:-translate-y-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+      className={`faith-route-card group glass-card relative block h-full overflow-hidden p-px hover:-translate-y-1.5 focus-visible:-translate-y-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
         !iniciada && index > 0 ? "animate-fase-liberada" : ""
       }`}
     >

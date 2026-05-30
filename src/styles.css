@@ -200,6 +200,11 @@
   }
 
   /* Cartões glassmorphism (Roteiro da Fé) */
+  .faith-route-grid {
+    align-items: stretch;
+    grid-auto-rows: 1fr;
+  }
+
   .glass-card {
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.08) inset,
@@ -211,6 +216,58 @@
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.18) inset,
       0 34px 80px -24px rgba(0, 0, 0, 0.6);
+  }
+
+  .faith-route-card {
+    height: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background:
+      radial-gradient(circle at 16% 14%, rgba(255, 255, 255, 0.12), transparent 30%),
+      linear-gradient(135deg, rgba(0, 92, 168, 0.9), rgba(0, 64, 125, 0.84) 48%, rgba(7, 43, 77, 0.78));
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .faith-route-card:hover,
+  .faith-route-card:focus-visible {
+    border-color: rgba(255, 126, 0, 0.44);
+  }
+
+  .faith-route-card-body {
+    display: flex;
+    min-height: 30rem;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: calc(1rem - 1px);
+    background: rgba(1, 25, 48, 0.2);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
+
+  .faith-route-title,
+  .faith-route-focus,
+  .faith-route-lock-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .faith-route-title {
+    min-height: 4rem;
+    -webkit-line-clamp: 2;
+  }
+
+  .faith-route-focus {
+    min-height: 2.75rem;
+    -webkit-line-clamp: 2;
+  }
+
+  .faith-route-lock-text {
+    -webkit-line-clamp: 3;
   }
 
   .animate-ping-soft {
