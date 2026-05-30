@@ -115,6 +115,55 @@ export const DEFAULT_GALERIA_SECOES: GaleriaSecao[] = [
   },
 ];
 
+/**
+ * As três unidades da galeria pública. Uma foto é atribuída a uma unidade
+ * quando uma de suas `keywords` aparece nas tags/título/descrição (mesma
+ * regra usada na página pública). Ao salvar no admin, gravamos a `tag`
+ * canônica de cada unidade selecionada.
+ */
+export const GALERIA_UNIDADES = [
+  {
+    id: "bom-despacho",
+    label: "Santuário do Bom Despacho",
+    tag: "bom despacho",
+    keywords: ["bom despacho", "nossa senhora do bom despacho", "santuario eucaristico"],
+  },
+  {
+    id: "grande-templo",
+    label: "Grande Templo",
+    tag: "grande templo",
+    keywords: ["grande templo", "assembleia de deus", "igreja evangelica"],
+  },
+  {
+    id: "mesquita-cuiaba",
+    label: "Mesquita de Cuiabá",
+    tag: "mesquita de cuiaba",
+    keywords: ["mesquita"],
+  },
+] as const;
+
+export type GaleriaUnidadeId = (typeof GALERIA_UNIDADES)[number]["id"];
+
+function normalizeGaleria(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase();
+}
+
+/** Ids das unidades às quais a foto pertence, a partir de suas tags. */
+export function unidadesDaFoto(tags: string[]): GaleriaUnidadeId[] {
+  const haystack = normalizeGaleria((tags ?? []).join(" "));
+  return GALERIA_UNIDADES.filter((u) =>
+    u.keywords.some((k) => haystack.includes(normalizeGaleria(k))),
+  ).map((u) => u.id);
+}
+
+/** Tags que não correspondem a nenhuma unidade (palavras-chave extras). */
+export function tagsExtras(tags: string[]): string[] {
+  return (tags ?? []).filter((tag) => unidadesDaFoto([tag]).length === 0);
+}
+
 export async function listFotos(): Promise<Foto[]> {
   if (!hasSupabaseConfig()) return [];
 
