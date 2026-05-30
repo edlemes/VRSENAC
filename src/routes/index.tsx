@@ -382,7 +382,7 @@ function Home() {
               to="/tours"
               className="group inline-flex min-h-12 items-center gap-3 bg-accent px-6 text-sm font-semibold uppercase tracking-widest text-accent-foreground shadow-lg transition hover:-translate-y-0.5 hover:bg-gold-soft sm:px-8"
             >
-              Explorar Tours
+              {t("common.exploreTours")}
               <ArrowRight size={16} className="transition group-hover:translate-x-1" />
             </Link>
           </div>
